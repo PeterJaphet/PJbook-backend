@@ -1,12 +1,12 @@
 import {z} from 'zod';
 
 const ROLES = {
-    USER: 'user',
-    ADMIN: 'admin',
-    PRO: 'pro',
+    Reader: 'reader',
+    Author: 'author',
+    Admin: 'admin'
   }
 
-export const userLoginSchema = z.object({
+export const userSignUpSchema = z.object({
     userId:z.string(),
     firstName:z.string(),
     lastName:z.string(),
@@ -16,8 +16,7 @@ export const userLoginSchema = z.object({
     role:z.nativeEnum(ROLES),
     phoneNumber:z.string(),
     address:z.string().optional()
-
 }).strict()
 
 
-export type userLogin = z.infer<typeof userLoginSchema>
+export type userLogin = z.infer<typeof userSignUpSchema>
