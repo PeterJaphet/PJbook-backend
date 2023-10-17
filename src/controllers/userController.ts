@@ -4,13 +4,12 @@ import authService from "../services/authService";
 
 const AuthService = new authService();
 const authUser = ah(async (req, res) => {
-  const data = await AuthService.signUp();
-  res.status(200).json({data});
+  res.status(200).json({ message: "login User" });
 });
 
 const registerUser = ah(async (req, res) => {
-  console.log(req.body);
-  res.status(200).json({ message: "register User" });
+  const data = await AuthService.signUp(req.body);
+  res.status(200).json({data});
 });
 
 const logoutUser = ah(async (req, res) => {

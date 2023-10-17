@@ -119,6 +119,8 @@ const   errorHandler = (
     )
   }
 
+  
+
   let statusCode = res.statusCode === 200 ? 500 : res.statusCode;
   let message = err.message;
 
@@ -128,7 +130,7 @@ const   errorHandler = (
   }
   res.status(statusCode).json({
     message,
-    stack: process.env.NODE_ENV !== "production" ? err.stack : "",
+    //stack: process.env.NODE_ENV !== "production" ? err.stack : "",
   });
 };
 

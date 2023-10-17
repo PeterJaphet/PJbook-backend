@@ -8,7 +8,6 @@ export const userSignUpSchema = z.object({
     email: z.string().email(),
     dob:z.string(),
     password: z.string().min(6).max(32),
-    rePassword: z.string().min(6).max(32),
     role:z.nativeEnum(ROLES),
     phoneNumber:z.string(),
     address:z.string().optional()
