@@ -1,19 +1,23 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema, models } from "mongoose";
 import { userLogin } from "../types/auth";
+import { ROLES } from "../utils/enums";
 
 const userSchema = new Schema(
   {
     firstName: {
       type: String,
       required: true,
+      trim:true,
     },
     lastName: {
       type: String,
       required: true,
+      trim:true,
     },
     email: {
       type: String,
       required: true,
+      trim:true,
     },
     dob: {
       type: String,
@@ -26,6 +30,7 @@ const userSchema = new Schema(
     role: {
       type: String,
       required: true,
+      enum:ROLES,
     },
     phoneNumber: {
       type: String,
@@ -34,10 +39,18 @@ const userSchema = new Schema(
     address: {
       type: String,
     },
+    verified :{
+      type: Boolean,
+      default: false
+    },
+    isActive :{
+      type: Boolean,
+      default: false
+    }
   },
   { timestamps: true }
 );
 
-const User = mongoose.model("User", userSchema);
+const User = models.User || mongoose.model("User", userSchema);
 
 export default User;

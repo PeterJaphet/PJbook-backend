@@ -12,14 +12,15 @@ export const userSignUpSchema = z.object({
     phoneNumber:z.string(),
     address:z.string().optional()
 }).strict()
-
-
 export type userSignUp = z.infer<typeof userSignUpSchema>
 
 export const userLoginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6).max(32),
 }).strict()
-
-
 export type userLogin = z.infer<typeof userLoginSchema>
+
+export const otpSchema = z.object({
+  email: z.string().email(),
+}).strict()
+export type otpType = z.infer<typeof otpSchema>
