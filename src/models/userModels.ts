@@ -1,45 +1,56 @@
-import mongoose, {Schema} from 'mongoose';
-import { userLogin } from '../types/auth';
+import mongoose, { Schema, models } from "mongoose";
+import { userLogin } from "../types/auth";
+import { ROLES } from "../utils/enums";
 
-const userSchema = new Schema <userLogin>({
-    userId:{
-        type:String,
-        required: true
+const userSchema = new Schema(
+  {
+    firstName: {
+      type: String,
+      required: true,
+      trim:true,
     },
-    firstName:{
-        type:String,
-        required: true
+    lastName: {
+      type: String,
+      required: true,
+      trim:true,
     },
-    lastName:{
-        type:String,
-        required: true
+    email: {
+      type: String,
+      required: true,
+      trim:true,
     },
-    email:{
-        type:String,
-        required: true
+    dob: {
+      type: String,
+      required: true,
     },
-    dob:{
-        type:String,
-        required: true
+    password: {
+      type: String,
+      required: true,
     },
-    password:{
-        type:String,
-        required: true
+    role: {
+      type: String,
+      required: true,
+      enum:ROLES,
     },
-    role:{
-        type:String,
-        required: true
+    phoneNumber: {
+      type: String,
+      required: true,
     },
-    phoneNumber:{
-        type:String,
-        required: true
+    address: {
+      type: String,
     },
-    address:{
-        type:String,
+    verified :{
+      type: Boolean,
+      default: false
+    },
+    isActive :{
+      type: Boolean,
+      default: false
     }
+  },
+  { timestamps: true }
+);
 
-}, {timestamps:true});
-
-const User = mongoose.model('User', userSchema);
+const User = models.User || mongoose.model("User", userSchema);
 
 export default User;
