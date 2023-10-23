@@ -1,36 +1,34 @@
-import ah from 'express-async-handler';
-import User from '../models/userModels';
+import ah from "express-async-handler";
+import User from "../models/userModels";
+import authService from "../services/authService";
 
-const authUser = ah(async(req, res) => {
-    console.log(req.body)
-  res.status(200).json({ message: "auth User" });
+const AuthService = new authService();
+const authUser = ah(async (req, res) => {
+  const data = await AuthService.signUp();
+  res.status(200).json({data});
 });
 
-
-const registerUser = ah(async(req, res) => {
-    console.log(req.body)
+const registerUser = ah(async (req, res) => {
+  console.log(req.body);
   res.status(200).json({ message: "register User" });
 });
 
-
-const logoutUser = ah(async(req, res) => {
+const logoutUser = ah(async (req, res) => {
   res.status(200).json({ message: "logout User" });
 });
 
-
-const getUserProfile = ah(async(req, res) => {
+const getUserProfile = ah(async (req, res) => {
   res.status(200).json({ message: "Get User" });
 });
 
-const updateUserProfile = ah(async(req, res) => {
-    res.status(200).json({ message: "update User" });
-  });
-
+const updateUserProfile = ah(async (req, res) => {
+  res.status(200).json({ message: "update User" });
+});
 
 export {
-    authUser,
-    registerUser,
-    logoutUser,
-    getUserProfile,
-    updateUserProfile
-}
+  authUser,
+  registerUser,
+  logoutUser,
+  getUserProfile,
+  updateUserProfile,
+};

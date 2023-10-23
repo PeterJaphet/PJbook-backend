@@ -25,7 +25,7 @@ const createApp = () => {
   app.use(fileUpload());
 
   app.get("/", (req, res) => res.send("Welcome to PJ Books Backend!"));
-  app.use("/api/users", userRoutes);
+  app.use("/users", userRoutes);
 
   app.use(notFound);
   app.use(errorHandler);
