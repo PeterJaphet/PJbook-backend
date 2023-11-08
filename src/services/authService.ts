@@ -3,31 +3,18 @@ import User from '../models/userModels';
 import Otp from '../models/userOtpVerification';
 
 import otpGenerator from 'otp-generator';
-import { otpType, userSignUp, userLogin } from '../types/auth';
+import {
+  otpType,
+  userSignUp,
+  userLogin,
+  GoogleUserResult,
+} from '../types/auth';
 import { bcryptCompare, bcryptPassword } from '../utils/hashPassword';
 import { generateJwt } from '../utils/jwtLib';
 import { FilterQuery, QueryOptions, UpdateQuery } from 'mongoose';
 import qs from 'qs';
 import axios from 'axios';
-
-interface GoogleTokensResult {
-  access_token: string;
-  expires_in: Number;
-  refresh_token: string;
-  scope: string;
-  id_token: string;
-}
-
-interface GoogleUserResult {
-  id: string;
-  email: string;
-  verified_email: boolean;
-  name: string;
-  given_name: string;
-  family_name: string;
-  picture: string;
-  locale: string;
-}
+import { GoogleTokensResult } from '../types/auth';
 
 class authService {
   async signIn(currentUser: userLogin) {
