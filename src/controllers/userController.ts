@@ -5,7 +5,6 @@ import authService from '../services/authService';
 
 const AuthService = new authService();
 const authUser = ah(async (req, res) => {
-  //todo:: Do a login code
   console.log(req.body);
 
   const data = await AuthService.signIn(req.body);

@@ -1,8 +1,7 @@
-import { Request, Response } from 'express';
 import { ValidationError } from '../middleware/errorMiddleware';
 import User from '../models/userModels';
 import Otp from '../models/userOtpVerification';
-import AuthRepo from '../repo/authRepo';
+
 import otpGenerator from 'otp-generator';
 import { otpType, userSignUp, userLogin } from '../types/auth';
 import { bcryptCompare, bcryptPassword } from '../utils/hashPassword';
@@ -32,10 +31,8 @@ interface GoogleUserResult {
 
 class authService {
   async signIn(currentUser: userLogin) {
-    //confirm that user is in our db already
     const existingUser = await User.findOne({ email: currentUser.email });
 
-    //if user is existing, confirm password
     if (existingUser) {
       const passMatch = await bcryptCompare(
         currentUser.password,
@@ -47,7 +44,6 @@ class authService {
     } else {
       throw new ValidationError('Wrong Email, please check and try again');
     }
-    // develope JWT --token
 
     const token = generateJwt(
       {
@@ -123,8 +119,6 @@ class authService {
     return otp;
   }
 
-  //....................................................
-
   async getGoogleOAuthTokens({
     code,
   }: {
@@ -139,8 +133,6 @@ class authService {
       grant_type: 'authorization_code',
     };
 
-    console.log({ values });
-
     try {
       const res = await axios.post<GoogleTokensResult>(
         url,
@@ -153,11 +145,6 @@ class authService {
       );
       return res.data;
     } catch (error: any) {
-      console.error(error.response.data.error);
-      console.log(
-        error,
-        'Failed to fetch Google OAuth Tokens...id and access tokens'
-      );
       throw new Error(error.message);
     }
   }
@@ -168,17 +155,15 @@ class authService {
   ): Promise<GoogleUserResult> {
     try {
       const res = await axios.get<GoogleUserResult>(
-        //we are telling google that we want touse this accesstoken to get User info
         `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${access_token}`,
         {
           headers: {
-            Authorization: `Bearer ${id_token}`, //id-token to verify that we are who we are
+            Authorization: `Bearer ${id_token}`,
           },
         }
       );
       return res.data;
     } catch (error: any) {
-      console.log(error, 'Error fetching Google user');
       throw new Error(error.message);
     }
   }
