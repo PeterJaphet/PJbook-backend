@@ -22,9 +22,10 @@ async function sendVerificationEmail(email: string, otp: number) {
   try {
     const mailResponse = await mailSender(
       email,
-      "Verification Email",
-      `<h1>Please confirm your OTP</h1>
-       <p>Here is your OTP code: ${otp}</p>`
+      "PJ Books Verification Email",
+      `<h1>PJ BOOKS</h1>
+      <h2>Please confirm your OTP</h2>
+       <p>Here is your OTP code: <b>${otp}</b>. Expires in 5 minutes.</p>`
     );
     logger.info("Email sent successfully: ", mailResponse);
   } catch (error) {

@@ -24,3 +24,8 @@ export const otpSchema = z.object({
   email: z.string().email(),
 }).strict()
 export type otpType = z.infer<typeof otpSchema>
+
+export const confirmOtpSchema = userLoginSchema.extend({
+  otp: z.number().int(),
+})
+export type confirmOtpType = z.infer<typeof confirmOtpSchema>
