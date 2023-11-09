@@ -1,16 +1,23 @@
+
+import { ValidationError } from "../middleware/errorMiddleware";
+import AuthRepo from "../repo/authRepo";
+import { generateJwt } from "../utils/jwtLib";
+import mongoose from "mongoose";
+import logger from "../utils/logger";
+import { generateOTP } from '../utils/generateOTP';
 import { ValidationError } from '../middleware/errorMiddleware';
 import User from '../models/userModels';
 import Otp from '../models/userOtpVerification';
 
 import otpGenerator from 'otp-generator';
 import {
+  confirmOtpType,
   otpType,
   userSignUp,
   userLogin,
   GoogleUserResult,
 } from '../types/auth';
 import { bcryptCompare, bcryptPassword } from '../utils/hashPassword';
-import { generateJwt } from '../utils/jwtLib';
 import { FilterQuery, QueryOptions, UpdateQuery } from 'mongoose';
 import qs from 'qs';
 import axios from 'axios';
@@ -83,26 +90,51 @@ class authService {
     const { email } = otpInfo;
 
     const existingUser = await User.findOne({ email });
+
     if (existingUser) {
       throw new ValidationError('user with this email already exists');
     }
-    let otp = otpGenerator.generate(6, {
-      upperCaseAlphabets: false,
-      lowerCaseAlphabets: false,
-      specialChars: false,
-    });
-
-    let result = await Otp.findOne({ otp: otp });
-    while (result) {
-      otp = otpGenerator.generate(6, {
-        upperCaseAlphabets: false,
-      });
-      result = await Otp.findOne({ otp: otp });
-    }
-
+    const otp = await generateOTP()
     const otpPayload = { email, otp };
     const otpBody = await Otp.create(otpPayload);
 
+    return otp;
+  }
+
+  async confirmOTP(confirmOtp: confirmOtpType) {
+    const { email, otp } = confirmOtp;
+
+    console.log(email,"Hello", otp)
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      throw new ValidationError("User with this email does not exists");
+    }
+    let _otp = await Otp.findOne({ otp: otp });
+    if (!_otp) {
+      throw new ValidationError("Invalid OTP");
+    }
+    const result = await User.findByIdAndUpdate(
+      { _id: user._id },
+      { isActive: true, verified: true }
+    );
+    const token = generateJwt(
+      { id: user.id, email: user.email, role: user.role },
+      false
+    );
+    return { user, token };
+  }
+
+  async resendOTP(otpInfo: otpType) {
+    const { email } = otpInfo;
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      throw new ValidationError("User with this email does not exists");
+    }
+    const otp = await generateOTP()
+    const otpPayload = { email, otp };
+    const otpBody = await Otp.create(otpPayload);
     return otp;
   }
 
@@ -161,7 +193,7 @@ class authService {
     options: QueryOptions = {}
   ) {
     return User.findOneAndUpdate(query, update, options);
-  }
+    }
 }
 
 export default authService;

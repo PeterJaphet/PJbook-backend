@@ -1,3 +1,4 @@
+
 import {
   authUser,
   registerUser,
@@ -5,6 +6,8 @@ import {
   updateUserProfile,
   getUserProfile,
   sendOTP,
+  confirmOTP, 
+  resendOTP,
   pjbooksWelcomePage,
   googleAuthUser,
   googleHtmlPage,
@@ -12,10 +15,13 @@ import {
 import express from 'express';
 import { callbackHandler } from '../utils/callbackController';
 
+
 const router = express.Router();
 
 router.post('/', registerUser);
 router.post('/send-otp', sendOTP);
+router.post('/confirm-otp', confirmOTP);
+router.post('/resend-otp', resendOTP);
 router.post('/login', authUser);
 router.get('/googlelogin', googleAuthUser);
 router.get('/auth/google/callback', callbackHandler);

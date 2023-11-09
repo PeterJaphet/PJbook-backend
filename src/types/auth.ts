@@ -37,7 +37,11 @@ export interface GoogleTokensResult {
   scope: string;
   id_token: string;
 }
-
+export const confirmOtpSchema = userLoginSchema.extend({
+  otp: z.number().int(),
+})
+export type confirmOtpType = z.infer<typeof confirmOtpSchema>
+=======
 export interface GoogleUserResult {
   id: string;
   email: string;

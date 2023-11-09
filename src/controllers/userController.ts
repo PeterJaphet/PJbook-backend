@@ -4,6 +4,7 @@ import path from 'path';
 import authService from '../services/authService';
 
 const AuthService = new authService();
+
 const authUser = ah(async (req, res) => {
   console.log(req.body);
 
@@ -31,6 +32,19 @@ const sendOTP = ah(async (req, res) => {
     .status(200)
     .json({ success: true, message: 'OTP sent successfully', data });
 });
+const confirmOTP = ah(async (req, res) => {
+  const data = await AuthService.confirmOTP(req.body);
+  res
+    .status(200)
+    .json({ success: true,  data });
+});
+
+const resendOTP = ah(async (req, res) => {
+  const data = await AuthService.resendOTP(req.body);
+  res
+    .status(200)
+    .json({ success: true, message: "OTP sent successfully", data });
+});
 
 const logoutUser = ah(async (req, res) => {
   res.status(200).json({ message: 'logout User' });
@@ -53,6 +67,8 @@ export {
   googleAuthUser,
   registerUser,
   sendOTP,
+  confirmOTP,
+  resendOTP,
   logoutUser,
   getUserProfile,
   updateUserProfile,
