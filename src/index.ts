@@ -3,7 +3,7 @@ import 'dotenv/config';
 import connectDB from './config/db';
 import createApp from './app';
 import logger from './utils/logger';
-
+import swaggerDocs from './utils/swagger';
 connectDB();
 
 const port = process.env.PORT || 5000;

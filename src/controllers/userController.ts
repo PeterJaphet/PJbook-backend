@@ -4,6 +4,7 @@ import path from 'path';
 import authService from '../services/authService';
 
 const AuthService = new authService();
+
 const authUser = ah(async (req, res) => {
   console.log(req.body);
 
@@ -16,6 +17,7 @@ const googleAuthUser = ah(async (req, res) => {
   const data = await AuthService.getGoogleOAuthURL();
   res.redirect(data);
 });
+
 const googleHtmlPage = ah(async (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'dist/index.html'));
 });
