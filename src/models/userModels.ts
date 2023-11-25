@@ -1,6 +1,6 @@
-import mongoose, { Schema, models } from 'mongoose';
+import mongoose, { Schema, models } from "mongoose";
 
-import { ROLES } from '../utils/enums';
+import { GENDER, ROLES } from "../utils/enums";
 
 const userSchema = new Schema(
   {
@@ -23,6 +23,12 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
+    gender: {
+      type: String,
+      required: true,
+      enum: GENDER,
+      default: GENDER.MALE,
+    },
     password: {
       type: String,
       required: true,
@@ -31,6 +37,7 @@ const userSchema = new Schema(
       type: String,
       required: true,
       enum: ROLES,
+      default: ROLES.READER,
     },
     phoneNumber: {
       type: String,
@@ -51,6 +58,6 @@ const userSchema = new Schema(
   { timestamps: true }
 );
 
-const User = models.User || mongoose.model('User', userSchema);
+const User = models.User || mongoose.model("User", userSchema);
 
 export default User;
