@@ -20,7 +20,7 @@ export const uploadCloudImage = async (image, folder) => {
     const buffer = Buffer.from(base64Data, "base64");
 
     const size = buffer.length / 1e6;
-    if (size > 2) {
+    if (size > 5) {
       throw new Error("Image size must not be higher than 5MB");
     }
 
@@ -49,6 +49,20 @@ export const uploadCloudImage = async (image, folder) => {
         folder: folder,
       }
     );
+
+    return result;
+  } catch (error) {
+    logger.err(`Error uploading image: ${JSON.stringify(error)}`);
+    throw error;
+  }
+};
+
+export const uploadPdfFile = async (file, folder) => {
+  try {
+    const result = await v2.uploader.upload(file, {
+      // resource_type: "raw",
+      folder: folder,
+    });
 
     return result;
   } catch (error) {

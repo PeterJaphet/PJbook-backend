@@ -23,7 +23,11 @@ const createApp = () => {
   app.use(bodyParser.json());
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
-  app.use(fileUpload());
+  // app.use(fileUpload({
+  //   limits:{
+  //     fileSize:1024*1024*5 //5MB max on
+  //   }
+  // }));
 
   app.get("/", (req, res) => res.send("Welcome to PJ Books Backend!"));
   app.use("/users", userRoutes);

@@ -3,6 +3,7 @@ import { BOOKTYPE } from '../utils/enums';
 
 export const addBookSchema = z
   .object({
+    userId: z.string(),
     title: z.string(),
     description: z.string(),
     imageUrl: z.string(),
