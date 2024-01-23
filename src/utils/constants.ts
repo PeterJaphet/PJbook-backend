@@ -1,0 +1,1 @@
+export const bookGenre :string [] = ['action', 'adventure', 'fantasy', 'romance', 'comic']
