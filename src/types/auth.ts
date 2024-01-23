@@ -1,11 +1,12 @@
 import { z } from 'zod';
-import { ROLES } from '../utils/enums';
+import { GENDER, ROLES } from '../utils/enums';
 
 export const userSignUpSchema = z
   .object({
     firstName: z.string(),
     lastName: z.string(),
     email: z.string().email(),
+    gender: z.nativeEnum(GENDER),
     dob: z.string(),
     password: z.string().min(6).max(32),
     role: z.nativeEnum(ROLES),
@@ -41,7 +42,6 @@ export const confirmOtpSchema = userLoginSchema.extend({
   otp: z.number().int(),
 })
 export type confirmOtpType = z.infer<typeof confirmOtpSchema>
-=======
 export interface GoogleUserResult {
   id: string;
   email: string;
