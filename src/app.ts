@@ -9,6 +9,8 @@ import userRoutes from "../src/routes/userRoutes";
 import bookRoutes from "../src/routes/bookRoutes";
 import fileUpload from "express-fileupload";
 import { notFound, errorHandler } from "./middleware/errorMiddleware";
+import { allowOnly, auth } from "./middleware/auth";
+import { ROLES } from "./utils/enums";
 
 const createApp = () => {
   const app = express();
@@ -31,7 +33,7 @@ const createApp = () => {
 
   app.get("/", (req, res) => res.send("Welcome to PJ Books Backend!"));
   app.use("/users", userRoutes);
-  app.use("/book", bookRoutes);
+  app.use("/book", auth(), bookRoutes);
 
   app.use(notFound);
   app.use(errorHandler);
