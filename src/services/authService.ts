@@ -16,6 +16,10 @@ import {
   userSignUp,
   userLogin,
   GoogleUserResult,
+  userChangePassword,
+  IUser,
+  updatedUser,
+  getUser,
 } from '../types/auth';
 import { bcryptCompare, bcryptPassword } from '../utils/hashPassword';
 import { FilterQuery, QueryOptions, UpdateQuery } from 'mongoose';
@@ -24,6 +28,51 @@ import axios from 'axios';
 import { GoogleTokensResult } from '../types/auth';
 
 class authService {
+  async getUser(userEmail: getUser) {
+    const existingUser = await User.findOne({ email: userEmail.email });
+    return existingUser;
+  }
+
+  async changePassword(userDetails: userChangePassword) {
+    const { email, oldPassword, newPassword } = userDetails;
+    const newPasswordhash = await bcryptPassword(newPassword);
+
+    //verify if user exists in DB
+    const existingUser = await User.findOne({ email: email });
+
+    if (!existingUser) throw new ValidationError(`${email} does not exist!`);
+
+    //bcrypt oldpassword and compare oldpassword with db
+    // const oldPasswordhash = await bcryptPassword(oldPassword);
+    // console.log(oldPasswordhash);
+
+    const passwordMatch = await bcryptCompare(
+      oldPassword,
+      existingUser.password
+    );
+
+    if (!passwordMatch) {
+      throw new ValidationError(`old Password does not exist!`);
+    }
+    //if passwords match, then fix newpassword to db
+    const updatedUser = await User.updateOne(
+      { email: email },
+      { $set: { password: newPasswordhash } }
+    );
+
+    //  = await User.findOne({ email: email });
+    return updatedUser;
+  }
+
+  async updateUser(userUpdateProfile: updatedUser) {
+    const { email } = userUpdateProfile;
+    const updatedUser = await User.replaceOne(
+      { email: email },
+      userUpdateProfile
+    );
+    return updatedUser;
+  }
+
   async signIn(currentUser: userLogin) {
     const existingUser = await User.findOne({ email: currentUser.email });
 
@@ -79,10 +128,14 @@ class authService {
 
     const user = await User.create({ ...newUser, isActive: true });
 
+    console.log(user);
+
     const token = generateJwt(
       { id: user.id, email: user.email, role: user.role },
       false
     );
+    console.log(`${token}`);
+
     return { user, token };
   }
 

@@ -5,6 +5,16 @@ import authService from '../services/authService';
 
 const AuthService = new authService();
 
+const getUser = ah(async (req, res) => {
+  const data = await AuthService.getUser(req.body);
+  res.status(200).json({ data });
+});
+
+const changePassword = ah(async (req, res) => {
+  const data = await AuthService.changePassword(req.body);
+  res.status(200).json({ data });
+});
+
 const authUser = ah(async (req, res) => {
   const data = await AuthService.signIn(req.body);
   res.status(200).json({ data });
@@ -14,6 +24,7 @@ const googleAuthUser = ah(async (req, res) => {
   const data = await AuthService.getGoogleOAuthURL();
   res.redirect(data);
 });
+
 const googleHtmlPage = ah(async (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'dist/index.html'));
 });
@@ -31,16 +42,14 @@ const sendOTP = ah(async (req, res) => {
 });
 const confirmOTP = ah(async (req, res) => {
   const data = await AuthService.confirmOTP(req.body);
-  res
-    .status(200)
-    .json({ success: true,  data });
+  res.status(200).json({ success: true, data });
 });
 
 const resendOTP = ah(async (req, res) => {
   const data = await AuthService.resendOTP(req.body);
   res
     .status(200)
-    .json({ success: true, message: "OTP sent successfully", data });
+    .json({ success: true, message: 'OTP sent successfully', data });
 });
 
 const logoutUser = ah(async (req, res) => {
@@ -48,11 +57,16 @@ const logoutUser = ah(async (req, res) => {
 });
 
 const getUserProfile = ah(async (req, res) => {
-  res.status(200).json({ message: 'Get User' });
+  const data = await AuthService.getUser(req.body);
+  res.status(200).json({ data });
+  // res.status(200).json({ message: 'Get User' });
 });
 
 const updateUserProfile = ah(async (req, res) => {
-  res.status(200).json({ message: 'update User' });
+  const data = await AuthService.updateUser(req.body);
+  res
+    .status(200)
+    .json({ success: true, message: 'User updated Successfully', data });
 });
 
 const pjbooksWelcomePage = ah(async (req, res) => {
@@ -71,4 +85,6 @@ export {
   updateUserProfile,
   pjbooksWelcomePage,
   googleHtmlPage,
+  changePassword,
+  getUser,
 };
