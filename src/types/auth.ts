@@ -1,12 +1,14 @@
 import { z } from 'zod';
-import { ROLES } from '../utils/enums';
+
 import mongoose from 'mongoose';
+import { GENDER, ROLES } from '../utils/enums';
 
 export const userSignUpSchema = z
   .object({
     firstName: z.string(),
     lastName: z.string(),
     email: z.string().email(),
+    gender: z.nativeEnum(GENDER),
     dob: z.string(),
     password: z.string().min(6).max(32),
     role: z.nativeEnum(ROLES),
@@ -72,7 +74,10 @@ export interface GoogleTokensResult {
   scope: string;
   id_token: string;
 }
-
+export const confirmOtpSchema = userLoginSchema.extend({
+  otp: z.number().int(),
+});
+export type confirmOtpType = z.infer<typeof confirmOtpSchema>;
 export interface GoogleUserResult {
   id: string;
   email: string;
@@ -83,54 +88,3 @@ export interface GoogleUserResult {
   picture: string;
   locale: string;
 }
-
-// export interface IUser extends mongoose.Document {
-//   firstName: {
-//     type: String;
-//     required: true;
-//     trim: true;
-//   };
-
-//   lastName: {
-//     type: String;
-//     required: true;
-//     trim: true;
-//   };
-//   email: {
-//     type: String;
-//     required: true;
-//     trim: true;
-//     unique: true;
-//   };
-//   dob: {
-//     type: String;
-//     required: true;
-//   };
-//   password: {
-//     type: String;
-//     required: true;
-//   };
-//   role: {
-//     type: String;
-//     required: true;
-//     enum: ROLES;
-//   };
-//   phoneNumber: {
-//     type: String;
-//     required: true;
-//   };
-//   address: {
-//     type: String;
-//   };
-//   avatar: {
-//     type: String;
-//   };
-//   verified: {
-//     type: Boolean;
-//     default: false;
-//   };
-//   isActive: {
-//     type: Boolean;
-//     default: false;
-//   };
-// }

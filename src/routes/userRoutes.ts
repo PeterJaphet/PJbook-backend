@@ -5,6 +5,8 @@ import {
   updateUserProfile,
   getUserProfile,
   sendOTP,
+  confirmOTP,
+  resendOTP,
   pjbooksWelcomePage,
   googleAuthUser,
   googleHtmlPage,
@@ -22,7 +24,8 @@ router.post('/', registerUser);
 router.post('/changepassword', changePassword);
 
 router.post('/send-otp', sendOTP);
-
+router.post('/confirm-otp', confirmOTP);
+router.post('/resend-otp', resendOTP);
 router.post('/login', authUser);
 
 router.get('/googlelogin', googleAuthUser);
