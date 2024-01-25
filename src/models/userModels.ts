@@ -18,6 +18,7 @@ const userSchema = new Schema(
       type: String,
       required: true,
       trim: true,
+      unique: true,
     },
     dob: {
       type: String,
@@ -37,6 +38,9 @@ const userSchema = new Schema(
       required: true,
     },
     address: {
+      type: String,
+    },
+    avatar: {
       type: String,
     },
     verified: {

@@ -5,11 +5,21 @@ import authService from '../services/authService';
 
 const AuthService = new authService();
 
+const getUser = ah(async (req, res) => {
+  console.log(req.body);
+  const data = await AuthService.getUser(req.body);
+  res.status(200).json({ data });
+});
+
+const changePassword = ah(async (req, res) => {
+  console.log(req.body);
+  const data = await AuthService.changePassword(req.body);
+  res.status(200).json({ data });
+});
+
 const authUser = ah(async (req, res) => {
   console.log(req.body);
-
   const data = await AuthService.signIn(req.body);
-
   res.status(200).json({ data });
 });
 
@@ -39,11 +49,16 @@ const logoutUser = ah(async (req, res) => {
 });
 
 const getUserProfile = ah(async (req, res) => {
-  res.status(200).json({ message: 'Get User' });
+  const data = await AuthService.getUser(req.body);
+  res.status(200).json({ data });
+  // res.status(200).json({ message: 'Get User' });
 });
 
 const updateUserProfile = ah(async (req, res) => {
-  res.status(200).json({ message: 'update User' });
+  const data = await AuthService.updateUser(req.body);
+  res
+    .status(200)
+    .json({ success: true, message: 'User updated Successfully', data });
 });
 
 const pjbooksWelcomePage = ah(async (req, res) => {
@@ -60,4 +75,6 @@ export {
   updateUserProfile,
   pjbooksWelcomePage,
   googleHtmlPage,
+  changePassword,
+  getUser,
 };

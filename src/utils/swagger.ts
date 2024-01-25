@@ -1,5 +1,5 @@
 import { Express, Request, Response } from 'express';
-import swaggerJsdoc from 'swagger-jsdoc'; // used to build out swaggerdocumentation
+import swaggerJsdoc from 'swagger-jsdoc'; // used to build out the swaggerdocumentation
 import swaggerUi from 'swagger-ui-express'; // used to expose the documentation in an Interface
 import { version } from '../../package.json';
 import log from './logger';
@@ -36,12 +36,14 @@ const options: swaggerJsdoc.Options = {
       },
     ],
   },
-  apis: ['./src/routes/userRoutes.ts', './src/types/*.ts'], //
+
+  apis: ['./docs/swaggerComponent.ts', './src/types/*.ts'],
 };
 
 const swaggerSpec = swaggerJsdoc(options);
 log.info(swaggerSpec);
 
+//function to expose some endpoints
 function swaggerDocs(app: Express, port: number | string) {
   //swagger page
   app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
