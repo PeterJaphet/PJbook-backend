@@ -1,6 +1,6 @@
-import mongoose, { Schema, models } from "mongoose";
+import mongoose, { Schema, models } from 'mongoose';
 
-import { GENDER, ROLES } from "../utils/enums";
+import { GENDER, ROLES } from '../utils/enums';
 
 const userSchema = new Schema(
   {
@@ -18,6 +18,7 @@ const userSchema = new Schema(
       type: String,
       required: true,
       trim: true,
+      unique: true,
     },
     dob: {
       type: String,
@@ -33,6 +34,13 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
+    passwordResetCode: { type: [String, null] },
+    resetToken: {
+      type: String,
+    },
+    resetTokenExpiration: {
+      type: Date,
+    },
     role: {
       type: String,
       required: true,
@@ -44,6 +52,9 @@ const userSchema = new Schema(
       required: true,
     },
     address: {
+      type: String,
+    },
+    avatar: {
       type: String,
     },
     verified: {
@@ -58,6 +69,6 @@ const userSchema = new Schema(
   { timestamps: true }
 );
 
-const User = models.User || mongoose.model("User", userSchema);
+const User = models.User || mongoose.model('User', userSchema);
 
 export default User;
