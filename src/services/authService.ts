@@ -1,10 +1,11 @@
-
-import { ValidationError } from "../middleware/errorMiddleware";
-import AuthRepo from "../repo/authRepo";
-import { generateJwt } from "../utils/jwtLib";
-import mongoose from "mongoose";
-import logger from "../utils/logger";
+import fs from 'fs';
+import { ValidationError } from '../middleware/errorMiddleware';
+import AuthRepo from '../repo/authRepo';
+import { generateJwt } from '../utils/jwtLib';
+import mongoose from 'mongoose';
+import logger from '../utils/logger';
 import { generateOTP } from '../utils/generateOTP';
+
 import User from '../models/userModels';
 import Otp from '../models/userOtpVerification';
 
@@ -16,34 +17,116 @@ import {
   userLogin,
   GoogleUserResult,
   userChangePassword,
-  IUser,
+  // IUser,
   updatedUser,
   getUser,
+  mailOptionsSchema,
+  ForgotPasswordSchemaInput,
+  userResetForgotPasswordInput,
+  updatedProfilePicture,
 } from '../types/auth';
 import { bcryptCompare, bcryptPassword } from '../utils/hashPassword';
 import { FilterQuery, QueryOptions, UpdateQuery } from 'mongoose';
 import qs from 'qs';
 import axios from 'axios';
+import crypto from 'crypto';
+import { z } from 'zod';
 import { GoogleTokensResult } from '../types/auth';
+import { uploadCloudImage } from '../utils/cloudinary';
+import mailSender from '../utils/mailSender';
+import path from 'path';
 
 class authService {
-  async getUser(userEmail: getUser) {
-    const existingUser = await User.findOne({ email: userEmail.email });
-    return existingUser;
+  async forgotPassword(userDetails: ForgotPasswordSchemaInput) {
+    const { email, admin } = userDetails;
+
+    const message =
+      'If your email exists in our records, you will recieve a password reset email';
+
+    const title = 'Reset Password Email Alert';
+
+    const body = `<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div>
+    <h2>Reset Password</h2>
+    <br>
+    <p>Kindly type in your New Password and Confirm Password below:</p>
+
+    <form action="http://localhost:5000/users/reset-password-processor" method="POST">
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" required>
+
+      <br>
+
+
+      <label for="newpassword">New Password:</label>
+      <input type="password" id="newpassword" name="newpassword" required>
+
+      <br>
+
+      <label for="confirmpassword">Confirm Password:</label>
+      <input type="password" id="confirmpassword" name="confirmpassword" required>
+
+      <br>
+
+      <button type="submit">Reset Password</button>
+    </form>
+  </div>
+</body>
+
+</html>`;
+
+    const user = await User.findOne({ email: email });
+
+    if (!user) {
+      logger.debug(`User with email: ${email} does not exist`);
+      throw new ValidationError(`User not found! ${message}`);
+    }
+    if (!user.verified) {
+      logger.err(`User is not verified.....logger.err says`);
+      throw new ValidationError('User is not verified');
+    }
+    await mailSender(email, title, body);
+    return;
   }
 
-  async changePassword(userDetails: userChangePassword) {
-    const { email, oldPassword, newPassword } = userDetails;
+  async resetForgotPassword(userDetails: userResetForgotPasswordInput) {
+    const { email, newPassword, confirmPassword } = userDetails;
     const newPasswordhash = await bcryptPassword(newPassword);
 
-    //verify if user exists in DB
     const existingUser = await User.findOne({ email: email });
 
     if (!existingUser) throw new ValidationError(`${email} does not exist!`);
 
-    //bcrypt oldpassword and compare oldpassword with db
-    // const oldPasswordhash = await bcryptPassword(oldPassword);
-    // console.log(oldPasswordhash);
+    const updatedUser = await User.updateOne(
+      { email: email },
+      { $set: { password: newPasswordhash } }
+    );
+
+    return updatedUser;
+  }
+
+  async updateProfilePicture(image: any) {
+    const result = await uploadCloudImage(image, null);
+
+    const newCloudinaryImageUrl = result.secure_url;
+  }
+
+  async resetPassword(userDetails: userChangePassword) {
+    const { email, oldPassword, newPassword } = userDetails;
+    const newPasswordhash = await bcryptPassword(newPassword);
+
+    const existingUser = await User.findOne({ email: email });
+
+    if (!existingUser) throw new ValidationError(`${email} does not exist!`);
 
     const passwordMatch = await bcryptCompare(
       oldPassword,
@@ -53,23 +136,83 @@ class authService {
     if (!passwordMatch) {
       throw new ValidationError(`old Password does not exist!`);
     }
-    //if passwords match, then fix newpassword to db
+
     const updatedUser = await User.updateOne(
       { email: email },
       { $set: { password: newPasswordhash } }
     );
 
-    //  = await User.findOne({ email: email });
     return updatedUser;
   }
 
-  async updateUser(userUpdateProfile: updatedUser) {
-    const { email } = userUpdateProfile;
-    const updatedUser = await User.replaceOne(
-      { email: email },
-      userUpdateProfile
+  async getUser(userEmail: getUser) {
+    const existingUser = await User.findOne({ email: userEmail.email });
+    return existingUser;
+  }
+
+  async changePassword(userDetails: userChangePassword) {
+    const { email, oldPassword, newPassword } = userDetails;
+    const newPasswordhash = await bcryptPassword(newPassword);
+
+    const existingUser = await User.findOne({ email: email });
+
+    if (!existingUser) throw new ValidationError(`${email} does not exist!`);
+
+    const passwordMatch = await bcryptCompare(
+      oldPassword,
+      existingUser.password
     );
+
+    if (!passwordMatch) {
+      throw new ValidationError(`old Password does not exist!`);
+    }
+
+    const updatedUser = await User.updateOne(
+      { email: email },
+      { $set: { password: newPasswordhash } }
+    );
+
     return updatedUser;
+  }
+
+  async updateUserProfile(userUpdateProfile: updatedUser) {
+    const {
+      email,
+      firstName,
+      lastName,
+      dob,
+      role,
+      phoneNumber,
+      verified,
+      isActive,
+      address,
+    } = userUpdateProfile;
+    const updatedUser = await User.updateOne(
+      { email: email },
+      {
+        $set: {
+          firstName: firstName,
+          lastName: lastName,
+          dob: dob,
+          role: role,
+          phoneNumber: phoneNumber,
+          verified: verified,
+          isActive: isActive,
+          address: address,
+        },
+      }
+    );
+
+    return updatedUser;
+  }
+
+  async updateUserProfilePicture(userPictureProfile: updatedProfilePicture) {
+    const { email, avatar } = userPictureProfile;
+    const updatedPictureAvatar = await User.updateOne(
+      { email: email },
+      { $set: { avatar: avatar } }
+    );
+    return updatedPictureAvatar;
   }
 
   async signIn(currentUser: userLogin) {
@@ -146,7 +289,7 @@ class authService {
     if (existingUser) {
       throw new ValidationError('user with this email already exists');
     }
-    const otp = await generateOTP()
+    const otp = await generateOTP();
     const otpPayload = { email, otp };
     const otpBody = await Otp.create(otpPayload);
 
@@ -156,15 +299,15 @@ class authService {
   async confirmOTP(confirmOtp: confirmOtpType) {
     const { email, otp } = confirmOtp;
 
-    console.log(email,"Hello", otp)
+    console.log(email, 'Hello', otp);
     const user = await User.findOne({ email });
 
     if (!user) {
-      throw new ValidationError("User with this email does not exists");
+      throw new ValidationError('User with this email does not exists');
     }
     let _otp = await Otp.findOne({ otp: otp });
     if (!_otp) {
-      throw new ValidationError("Invalid OTP");
+      throw new ValidationError('Invalid OTP');
     }
     const result = await User.findByIdAndUpdate(
       { _id: user._id },
@@ -182,9 +325,9 @@ class authService {
     const user = await User.findOne({ email });
 
     if (!user) {
-      throw new ValidationError("User with this email does not exists");
+      throw new ValidationError('User with this email does not exists');
     }
-    const otp = await generateOTP()
+    const otp = await generateOTP();
     const otpPayload = { email, otp };
     const otpBody = await Otp.create(otpPayload);
     return otp;
@@ -245,7 +388,7 @@ class authService {
     options: QueryOptions = {}
   ) {
     return User.findOneAndUpdate(query, update, options);
-    }
+  }
 }
 
 export default authService;

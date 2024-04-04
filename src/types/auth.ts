@@ -3,6 +3,37 @@ import { z } from 'zod';
 import mongoose from 'mongoose';
 import { GENDER, ROLES } from '../utils/enums';
 
+//working currently below:
+
+export const forgotPasswordSchema = z
+  .object({
+    email: z
+      .string({ required_error: 'Email is required' })
+      .email('Not a valid email'),
+    admin: z.boolean({ required_error: 'Role is required' }),
+  })
+  .strict();
+export type ForgotPasswordSchemaInput = z.infer<typeof forgotPasswordSchema>;
+
+// Validation schema using Zod
+export const resetPasswordSchema = z
+  .object({
+    email: z.string().email(),
+  })
+  .strict();
+export type resetPasswordSchema = z.infer<typeof resetPasswordSchema>;
+
+export const mailOptionsSchema = z
+  .object({
+    from: z.string().email(),
+    to: z.string().email(),
+    subject: z.string(),
+    html: z.string(),
+  })
+  .strict();
+export type mailOptionsSchema = z.infer<typeof mailOptionsSchema>;
+//working currently above:
+
 export const userSignUpSchema = z
   .object({
     firstName: z.string(),
@@ -25,16 +56,22 @@ export const updateUserSchema = z
     lastName: z.string(),
     email: z.string().email(),
     dob: z.string(),
-    password: z.string().min(6).max(32),
     role: z.nativeEnum(ROLES),
     phoneNumber: z.string(),
-    avatar: z.string(),
     address: z.string().optional(),
     verified: z.boolean().default(false),
     isActive: z.boolean().default(false),
   })
   .strict();
 export type updatedUser = z.infer<typeof updateUserSchema>;
+
+export const updateProfilePictureSchema = z
+  .object({
+    email: z.string().email(),
+    avatar: z.string(),
+  })
+  .strict();
+export type updatedProfilePicture = z.infer<typeof updateProfilePictureSchema>;
 
 export const userLoginSchema = z
   .object({
@@ -52,6 +89,18 @@ export const userChangePasswordSchema = z
   })
   .strict();
 export type userChangePassword = z.infer<typeof userChangePasswordSchema>;
+
+export const userResetForgotPasswordSchema = z
+  .object({
+    email: z.string().email(),
+    newPassword: z.string().min(6).max(32),
+    confirmPassword: z.string().min(6).max(32),
+  })
+  .strict()
+  .refine((data) => data.newPassword === data.confirmPassword);
+export type userResetForgotPasswordInput = z.infer<
+  typeof userResetForgotPasswordSchema
+>;
 
 export const getUserSchema = z
   .object({
