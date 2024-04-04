@@ -1,5 +1,68 @@
 /**
  * @openapi
+ *
+ * '/users':
+ *    post:
+ *      tags:
+ *        - user
+ *      summary: create a new User
+ *      description: creating a new user in the app
+ *      operationId: CreateUser
+ *      requestBody:
+ *        required: true
+ *        description: create user object
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/User'
+ *          application/xml:
+ *            schema:
+ *              $ref: '#/components/schemas/User'
+ *          application/x-www-form-urlencoded:
+ *            schema:
+ *              $ref: '#/components/schemas/User'
+ *      responses:
+ *        default:
+ *           description: successful operation
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/UserResponse'
+ *             application/xml:
+ *               schema:
+ *                 $ref: '#/components/schemas/UserResponse'
+ *  
+ * 
+ * 
+ * 
+ *  
+ * '/users/login':
+ *    post:
+ *      tags:
+ *        - user
+ *      summary: login as an existing User
+ *      description: Logging in as an existing user in the app
+ *      operationId: LoginUser
+ *      requestBody:
+ *        description: Login an existing User in the app
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Login'
+ *      responses:
+ *        default:
+ *           description: successful operation
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/LoginResponse'
+ *             application/xml:
+ *               schema:
+ *                 $ref: '#/components/schemas/LoginResponse'
+ *  
+ * 
+ * 
  * '/users/forgot-password':
  *    get:
  *      tags:
@@ -17,7 +80,7 @@
  * '/users/update-profile-picture':
  *    post:
  *      tags:
- *        - user
+ *        - Update-User
  *      summary: updates profile picture 
  *      description: updates user's profile picture
  *      operationId: update-profile-picture
@@ -47,10 +110,10 @@
  * 
  * 
  * 
- * '/users//update-user-profile':
+ * '/users/update-user-profile':
  *    post:
  *      tags:
- *        - user
+ *        - Update-User
  *      summary: updates user's Profile 
  *      description: Updates User's Profile
  *      operationId: update-user-profile
@@ -143,37 +206,7 @@
  *                 $ref: '#/components/schemas/ResetPasswordInputsResponse'
  * 
  * 
- * '/users':
- *    post:
- *      tags:
- *        - user
- *      summary: create a new User
- *      description: creating a new user in the app
- *      operationId: CreateUser
- *      requestBody:
- *        required: true
- *        description: create user object
- *        content:
- *          application/json:
- *            schema:
- *              $ref: '#/components/schemas/User'
- *          application/xml:
- *            schema:
- *              $ref: '#/components/schemas/User'
- *          application/x-www-form-urlencoded:
- *            schema:
- *              $ref: '#/components/schemas/User'
- *      responses:
- *        default:
- *           description: successful operation
- *           content:
- *             application/json:
- *               schema:
- *                 $ref: '#/components/schemas/UserResponse'
- *             application/xml:
- *               schema:
- *                 $ref: '#/components/schemas/UserResponse'
- * 
+
  * '/users/getuser':
  *    post:
  *      tags:
@@ -268,31 +301,7 @@
  *               schema:
  *                 $ref: '#/components/schemas/Send-otp-Response' 
  * 
- * '/users/login':
- *    post:
- *      tags:
- *        - user
- *      summary: login as an existing User
- *      description: Logging in as an existing user in the app
- *      operationId: LoginUser
- *      requestBody:
- *        description: Login an existing User in the app
- *        required: true
- *        content:
- *          application/json:
- *            schema:
- *              $ref: '#/components/schemas/Login'
- *      responses:
- *        default:
- *           description: successful operation
- *           content:
- *             application/json:
- *               schema:
- *                 $ref: '#/components/schemas/LoginResponse'
- *             application/xml:
- *               schema:
- *                 $ref: '#/components/schemas/LoginResponse'
- * 
+ 
  * /users/googlelogin:
  *   get:
  *      tags:
@@ -337,7 +346,6 @@
  *      required: 
  *        - email
  *        - admin
- *        
  *      properties:      
  *        email:
  *          type: string
@@ -393,11 +401,9 @@
  *     UpdateUserProfile:
  *      type: object
  *      required: 
- *        - email
  *        - firstName
  *        - lastName
- *        - dob
- *        - role
+ *        - dob        
  *        - pnoneNumber
  *      properties:
 *        firstName:
@@ -406,25 +412,17 @@
  *        lastName:
  *          type: string
  *          example: Aronu
- *        email:
- *          type: string
- *          example: uzo@gmail.com
  *        dob:
  *          type: string
  *          example: '14th may'
- *        role:
- *          type: string
- *          example: admin
  *        phoneNumber:
  *          type: string
  *          example: 12345678910
- *        verified:
- *          type: boolean
- *          example: true or false
- *        isActive:
- *          type: boolean
- *          example: true or false
+ *        address:
+ *          type: string
+ *          example: barclays luxury estate 
  
+
  *     UpdateUserProfileResponse:
  *       type: object
  *       properties:

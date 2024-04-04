@@ -3,9 +3,14 @@ import { Request, Response } from 'express';
 import path from 'path';
 
 import { ForgotPasswordSchemaInput, forgotPasswordSchema } from '../types/auth';
-
 import authService from '../services/authService';
+
 const AuthService = new authService();
+
+const registerUserHandler = ah(async (req, res) => {
+  const data = await AuthService.signUp(req.body);
+  res.status(200).json({ data });
+});
 
 const forgtPasswordInputPageHandler = ah(async (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'dist/forgotPasswordInputPage.html'));
@@ -28,7 +33,12 @@ const resetPasswordHandler = ah(async (req, res) => {
 });
 
 const updateUserProfile = ah(async (req, res) => {
-  const data = await AuthService.updateUserProfile(req.body);
+  console.log(req);
+
+  const data = await AuthService.updateUserProfile(
+    req.body,
+    req.body.tokenData
+  );
   res
     .status(200)
     .json({ success: true, message: 'User updated Successfully', data });
@@ -53,8 +63,15 @@ const changePassword = ah(async (req, res) => {
   res.status(200).json({ data });
 });
 
-const authUser = ah(async (req, res) => {
+const signInUserAuth = ah(async (req, res) => {
   const data = await AuthService.signIn(req.body);
+  res.cookie('token', data.token, {
+    httpOnly: true,
+    //secure:true,
+    //maxAge:true,
+    //signed:true,
+  });
+  //res.redirect('/dashboardPage')
   res.status(200).json({ data });
 });
 
@@ -65,11 +82,6 @@ const googleAuthUser = ah(async (req, res) => {
 
 const googleHtmlPage = ah(async (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'dist/index.html'));
-});
-
-const registerUser = ah(async (req, res) => {
-  const data = await AuthService.signUp(req.body);
-  res.status(200).json({ data });
 });
 
 const sendOTP = ah(async (req, res) => {
@@ -105,9 +117,9 @@ const pjbooksWelcomePage = ah(async (req, res) => {
 });
 
 export {
-  authUser,
+  registerUserHandler,
+  signInUserAuth,
   googleAuthUser,
-  registerUser,
   sendOTP,
   confirmOTP,
   resendOTP,

@@ -54,13 +54,11 @@ export const updateUserSchema = z
   .object({
     firstName: z.string(),
     lastName: z.string(),
-    email: z.string().email(),
+    // email: z.string().email(),
     dob: z.string(),
-    role: z.nativeEnum(ROLES),
+    // role: z.nativeEnum(ROLES),
     phoneNumber: z.string(),
     address: z.string().optional(),
-    verified: z.boolean().default(false),
-    isActive: z.boolean().default(false),
   })
   .strict();
 export type updatedUser = z.infer<typeof updateUserSchema>;

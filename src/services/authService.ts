@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { ValidationError } from '../middleware/errorMiddleware';
 import AuthRepo from '../repo/authRepo';
-import { generateJwt } from '../utils/jwtLib';
+import { generateJwt, tokenData } from '../utils/jwtLib';
 import mongoose from 'mongoose';
 import logger from '../utils/logger';
 import { generateOTP } from '../utils/generateOTP';
@@ -175,30 +175,19 @@ class authService {
     return updatedUser;
   }
 
-  async updateUserProfile(userUpdateProfile: updatedUser) {
-    const {
-      email,
-      firstName,
-      lastName,
-      dob,
-      role,
-      phoneNumber,
-      verified,
-      isActive,
-      address,
-    } = userUpdateProfile;
+  async updateUserProfile(
+    userUpdateProfile: updatedUser,
+    tokenData: tokenData
+  ) {
+    const { firstName, lastName, dob, phoneNumber } = userUpdateProfile;
     const updatedUser = await User.updateOne(
-      { email: email },
+      { email: tokenData.email },
       {
         $set: {
           firstName: firstName,
           lastName: lastName,
           dob: dob,
-          role: role,
           phoneNumber: phoneNumber,
-          verified: verified,
-          isActive: isActive,
-          address: address,
         },
       }
     );

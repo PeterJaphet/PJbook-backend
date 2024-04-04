@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 
 import { ROLES } from './enums';
 
-type tokenData = {
+export type tokenData = {
   id: string;
   email: string;
   role: ROLES;

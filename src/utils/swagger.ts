@@ -1,7 +1,8 @@
 import { Express, Request, Response } from 'express';
 import swaggerJsdoc from 'swagger-jsdoc'; // used to build out the swaggerdocumentation
 import swaggerUi from 'swagger-ui-express'; // used to expose the documentation in an Interface
-import { version } from '../../package.json';
+import { version } from '../../package.json'; //used to put our version on th docs
+
 import log from './logger';
 
 const options: swaggerJsdoc.Options = {
