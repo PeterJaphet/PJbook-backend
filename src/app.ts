@@ -1,5 +1,5 @@
 import express from 'express';
-import http from 'http';
+
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import compression from 'compression';
@@ -13,7 +13,6 @@ import bookRoutes from '../src/routes/bookRoutes';
 import fileUpload from 'express-fileupload';
 import { notFound, errorHandler } from './middleware/errorMiddleware';
 import { allowOnly, auth } from './middleware/auth';
-import { ROLES } from './utils/enums';
 
 const createApp = () => {
   const app = express();
@@ -28,11 +27,6 @@ const createApp = () => {
   app.use(bodyParser.json());
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
-  // app.use(fileUpload({
-  //   limits:{
-  //     fileSize:1024*1024*5 //5MB max on
-  //   }
-  // }));
 
   swaggerDocs(app, 5000);
 

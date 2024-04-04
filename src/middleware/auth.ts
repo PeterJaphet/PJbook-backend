@@ -1,10 +1,10 @@
-import { NextFunction, Request, Response } from "express";
-import ah from "express-async-handler";
-import { ForbiddenError, UnauthorizedError } from "./errorMiddleware";
-import { decodeJwt, verifyJwt } from "../utils/jwtLib";
-import UserRepo from "../repo/userRepo";
-import { ROLES } from "../utils/enums";
-import { CustomRequest } from "../utils/requestInterface";
+import { NextFunction, Request, Response } from 'express';
+import ah from 'express-async-handler';
+import { ForbiddenError, UnauthorizedError } from './errorMiddleware';
+import { decodeJwt, verifyJwt } from '../utils/jwtLib';
+import UserRepo from '../repo/userRepo';
+import { ROLES } from '../utils/enums';
+import { CustomRequest } from '../utils/requestInterface';
 
 const auth = () =>
   ah(async (req: CustomRequest, res: Response, next: NextFunction) => {
@@ -23,7 +23,7 @@ const auth = () =>
     if (!user) throw new UnauthorizedError(`User not found!`);
 
     if (decodedToken.role === ROLES.AUTHOR && !user.verified)
-      throw new ForbiddenError("Author is not verified yet!");
+      throw new ForbiddenError('Author is not verified yet!');
 
     if (!user.isActive) throw new ForbiddenError(`${user.role} is inactive!`);
 
@@ -44,5 +44,10 @@ const denyOnly = (roles: ROLES[]) =>
     next();
   });
 
+const forgotPasswordAlert = (roles: ROLES[]) =>
+  ah(async (req: CustomRequest, res: Response, next: NextFunction) => {
+    if (roles.includes(req.tokenData!.role)) throw new ForbiddenError();
+    next();
+  });
 
-  export { auth, allowOnly, denyOnly }
+export { auth, allowOnly, denyOnly, forgotPasswordAlert };
