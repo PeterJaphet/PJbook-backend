@@ -5,7 +5,6 @@ import { generateJwt } from "../utils/jwtLib";
 import mongoose from "mongoose";
 import logger from "../utils/logger";
 import { generateOTP } from '../utils/generateOTP';
-import { ValidationError } from '../middleware/errorMiddleware';
 import User from '../models/userModels';
 import Otp from '../models/userOtpVerification';
 

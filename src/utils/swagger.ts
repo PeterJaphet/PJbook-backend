@@ -22,7 +22,7 @@ const options: swaggerJsdoc.Options = {
     },
 
     components: {
-      securitySchemas: {
+      securitySchemes: {
         bearerAuth: {
           type: 'http',
           scheme: 'bearer',
@@ -49,7 +49,7 @@ function swaggerDocs(app: Express, port: number | string) {
   app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
   //Docs in JSON format
-  app.get('./docs.json', (req: Request, res: Response) => {
+  app.get('/docs.json', (req: Request, res: Response) => {
     res.setHeader('Content-Type', 'application/json');
     res.send(swaggerSpec);
   });
