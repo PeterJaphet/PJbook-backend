@@ -45,5 +45,4 @@ router.post('/logout', logoutUser);
 router.route('/profile').get(getUserProfile).put(updateUserProfile);
 router.get('/', pjbooksWelcomePage);
 
-console.log('Odogwu');
 export default router;
