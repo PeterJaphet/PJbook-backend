@@ -17,6 +17,7 @@ import {
   resetPasswordHandler,
   updateUserProfilePicture,
 } from '../controllers/userController';
+import { auth } from '../middleware/auth';
 import { callbackHandler } from '../utils/callbackController';
 
 import express from 'express';
@@ -29,10 +30,10 @@ router.post('/reset-password-processor', resetPasswordHandler);
 router.post('/update-profile-picture', updateUserProfilePicture);
 router.post('/update-user-profile', updateUserProfile);
 
-router.post('/getuser', getUser);
+router.post('/get-user', auth(), getUser);
 router.post('/', registerUser);
 
-router.post('/changepassword', changePassword);
+router.post('/change-password', changePassword);
 router.post('/send-otp', sendOTP);
 router.post('/confirm-otp', confirmOTP);
 router.post('/resend-otp', resendOTP);

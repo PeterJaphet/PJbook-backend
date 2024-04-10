@@ -41,7 +41,7 @@ const options: swaggerJsdoc.Options = {
 };
 
 const swaggerSpec = swaggerJsdoc(options);
-log.info(swaggerSpec);
+// log.info(swaggerSpec);
 
 //function to expose some endpoints
 function swaggerDocs(app: Express, port: number | string) {

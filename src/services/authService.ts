@@ -35,6 +35,7 @@ import { GoogleTokensResult } from '../types/auth';
 import { uploadCloudImage } from '../utils/cloudinary';
 import mailSender from '../utils/mailSender';
 import path from 'path';
+import { ROLES } from '../utils/enums';
 
 class authService {
   async forgotPassword(userDetails: ForgotPasswordSchemaInput) {
@@ -146,7 +147,7 @@ class authService {
   }
 
   async getUser(userEmail: getUser) {
-    const existingUser = await User.findOne({ email: userEmail.email });
+    const existingUser = await User.findOne({ email: userEmail });
     return existingUser;
   }
 
@@ -236,10 +237,10 @@ class authService {
         email: existingUser.email,
         role: existingUser.role,
       },
-      false
+      existingUser.role === ROLES.ADMIN
     );
 
-    return { existingUser, token };
+    return { user: existingUser, token };
   }
 
   async getGoogleOAuthURL() {
@@ -270,13 +271,10 @@ class authService {
 
     const user = await User.create({ ...newUser, isActive: true });
 
-    console.log(user);
-
     const token = generateJwt(
       { id: user.id, email: user.email, role: user.role },
       false
     );
-    console.log(`${token}`);
 
     return { user, token };
   }
@@ -298,8 +296,6 @@ class authService {
 
   async confirmOTP(confirmOtp: confirmOtpType) {
     const { email, otp } = confirmOtp;
-
-    console.log(email, 'Hello', otp);
     const user = await User.findOne({ email });
 
     if (!user) {
