@@ -174,7 +174,7 @@
  *               schema:
  *                 $ref: '#/components/schemas/UserResponse'
  * 
- * '/users/getuser':
+ * '/users/get-user':
  *    post:
  *      tags:
  *        - user
@@ -183,16 +183,6 @@
  *      operationId: GetUser
  *      requestBody:
  *        description: get an existing user object
- *        content:
- *          application/json:
- *            schema:
- *              $ref: '#/components/schemas/GetUser'
- *          application/xml:
- *            schema:
- *              $ref: '#/components/schemas/GetUser'
- *          application/x-www-form-urlencoded:
- *            schema:
- *              $ref: '#/components/schemas/GetUser'
  *      responses:
  *        default:
  *           description: successful operation
@@ -604,7 +594,7 @@
  *      properties:
  *       email:
  *          type: string
- *          example: uzo@gmail.com *      
+ *          example: uzo@gmail.com      
  *     GetUserResponse:
  *      type: object
  *      properties:
