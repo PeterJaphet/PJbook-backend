@@ -24,7 +24,6 @@ import express from 'express';
 
 const router = express.Router();
 
-router.post('/', registerUserHandler);
 router.post('/login', signInUserAuth);
 
 router.get('/forgot-password', forgtPasswordInputPageHandler);
@@ -33,9 +32,10 @@ router.post('/reset-password-processor', resetPasswordHandler);
 router.patch('/update-profile-picture', auth, updateUserProfilePicture);
 router.patch('/update-user-profile', auth, updateUserProfile);
 
-router.post('/getuser', auth, getUser);
+router.post('/get-user', auth(), getUser);
+router.post('/', registerUserHandler);
 
-router.post('/changepassword', changePassword);
+router.post('/change-password', changePassword);
 router.post('/send-otp', sendOTP);
 router.post('/confirm-otp', confirmOTP);
 router.post('/resend-otp', resendOTP);

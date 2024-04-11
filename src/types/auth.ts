@@ -100,11 +100,11 @@ export type userResetForgotPasswordInput = z.infer<
   typeof userResetForgotPasswordSchema
 >;
 
-export const getUserSchema = z
-  .object({
-    email: z.string().email(),
-  })
-  .strict();
+export const getUserSchema = z.string().email()
+  // .object({
+  //   email: z.string().email(),
+  // // })
+  // .strict();
 export type getUser = z.infer<typeof getUserSchema>;
 
 export const otpSchema = z

@@ -3,7 +3,9 @@ import { Request, Response } from 'express';
 import path from 'path';
 
 import { ForgotPasswordSchemaInput, forgotPasswordSchema } from '../types/auth';
+
 import authService from '../services/authService';
+import { CustomRequest } from '../utils/requestInterface';
 
 const AuthService = new authService();
 
@@ -53,9 +55,8 @@ const updateUserProfilePicture = ah(async (req, res) => {
   });
 });
 
-const getUser = ah(async (req, res) => {
-  // console.log(req.tokenData, 'log');
-  const data = await AuthService.getUser(req.body);
+const getUser = ah(async (req: CustomRequest, res) => {
+  const data = await AuthService.getUser(req.tokenData?.email!);
   res.status(200).json({ data });
 });
 
