@@ -54,6 +54,7 @@ const updateUserProfilePicture = ah(async (req, res) => {
 });
 
 const getUser = ah(async (req, res) => {
+  // console.log(req.tokenData, 'log');
   const data = await AuthService.getUser(req.body);
   res.status(200).json({ data });
 });

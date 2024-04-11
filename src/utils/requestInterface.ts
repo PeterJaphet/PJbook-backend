@@ -1,5 +1,5 @@
-import { Request } from "express";
-import { ROLES } from "./enums";
+import { Request } from 'express';
+import { ROLES } from './enums';
 
 export interface CustomRequest extends Request {
   tokenData?: {

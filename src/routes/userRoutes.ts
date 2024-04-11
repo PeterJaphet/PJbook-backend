@@ -33,7 +33,7 @@ router.post('/reset-password-processor', resetPasswordHandler);
 router.patch('/update-profile-picture', auth, updateUserProfilePicture);
 router.patch('/update-user-profile', auth, updateUserProfile);
 
-router.post('/getuser', getUser);
+router.post('/getuser', auth, getUser);
 
 router.post('/changepassword', changePassword);
 router.post('/send-otp', sendOTP);

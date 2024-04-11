@@ -80,7 +80,7 @@
  * '/users/update-profile-picture':
  *    post:
  *      tags:
- *        - Update-User
+ *        - user
  *      summary: updates profile picture 
  *      description: updates user's profile picture
  *      operationId: update-profile-picture
@@ -113,7 +113,7 @@
  * '/users/update-user-profile':
  *    post:
  *      tags:
- *        - Update-User
+ *        - user
  *      summary: updates user's Profile 
  *      description: Updates User's Profile
  *      operationId: update-user-profile
