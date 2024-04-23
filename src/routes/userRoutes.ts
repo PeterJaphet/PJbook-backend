@@ -29,8 +29,8 @@ router.post('/login', signInUserAuth);
 router.get('/forgot-password', forgtPasswordInputPageHandler);
 router.post('/forgot-password-processor', forgotPasswordHandler);
 router.post('/reset-password-processor', resetPasswordHandler);
-router.patch('/update-profile-picture', auth, updateUserProfilePicture);
-router.patch('/update-user-profile', auth, updateUserProfile);
+router.patch('/update-profile-picture', auth(), updateUserProfilePicture);
+router.patch('/update-user-profile', auth(), updateUserProfile);
 
 router.post('/get-user', auth(), getUser);
 router.post('/', registerUserHandler);

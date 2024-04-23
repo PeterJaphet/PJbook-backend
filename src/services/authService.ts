@@ -23,7 +23,7 @@ import {
   mailOptionsSchema,
   ForgotPasswordSchemaInput,
   userResetForgotPasswordInput,
-  updatedProfilePicture,
+  avatarProfile,
 } from '../types/auth';
 import { bcryptCompare, bcryptPassword } from '../utils/hashPassword';
 import { FilterQuery, QueryOptions, UpdateQuery } from 'mongoose';
@@ -115,10 +115,29 @@ class authService {
     return updatedUser;
   }
 
-  async updateProfilePicture(image: any) {
-    const result = await uploadCloudImage(image, null);
-
+  //####################################################
+  async updateProfilePicture(
+    image: string | undefined,
+    folder: string | undefined,
+    email: string
+  ) {
+    const result = await uploadCloudImage(image, folder);
+    //result is the cloudinary string of our uploaded image to cloudinary
     const newCloudinaryImageUrl = result.secure_url;
+
+    //use  newCloudinaryImageUrl to update the DB
+
+    const existingUser = await User.findOne({ email: email });
+
+    if (!existingUser)
+      throw new ValidationError(`User with ${email} does not exist!`);
+
+    const updatedUser = await User.updateOne(
+      { email: email },
+      { $set: { avatar: newCloudinaryImageUrl } }
+    );
+
+    return updatedUser;
   }
 
   async resetPassword(userDetails: userChangePassword) {
@@ -194,15 +213,6 @@ class authService {
     );
 
     return updatedUser;
-  }
-
-  async updateUserProfilePicture(userPictureProfile: updatedProfilePicture) {
-    const { email, avatar } = userPictureProfile;
-    const updatedPictureAvatar = await User.updateOne(
-      { email: email },
-      { $set: { avatar: avatar } }
-    );
-    return updatedPictureAvatar;
   }
 
   async signIn(currentUser: userLogin) {

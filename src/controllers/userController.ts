@@ -34,20 +34,23 @@ const resetPasswordHandler = ah(async (req, res) => {
   res.status(200).redirect('http://localhost:5000/users/login');
 });
 
-const updateUserProfile = ah(async (req, res) => {
+const updateUserProfile = ah(async (req: CustomRequest, res) => {
   console.log(req);
 
-  const data = await AuthService.updateUserProfile(
-    req.body,
-    req.body.tokenData
-  );
+  const data = await AuthService.updateUserProfile(req.body, req.tokenData);
   res
     .status(200)
     .json({ success: true, message: 'User updated Successfully', data });
 });
 
-const updateUserProfilePicture = ah(async (req, res) => {
-  const data = await AuthService.updateUserProfilePicture(req.body);
+const updateUserProfilePicture = ah(async (req: CustomRequest, res) => {
+  const data = await AuthService.updateProfilePicture(
+    req.body.image,
+    req.body.folder,
+    req.tokenData?.email!
+    // its either we do it like this above; or we add image and folder as properties of token data... bc the folder is supposed to be the folder name in cloudinary (i.e image or video or what ever we called the folder)
+  );
+
   res.status(200).json({
     success: true,
     message: 'User Profile Picture updated Successfully',

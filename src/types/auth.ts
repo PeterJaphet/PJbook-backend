@@ -63,13 +63,12 @@ export const updateUserSchema = z
   .strict();
 export type updatedUser = z.infer<typeof updateUserSchema>;
 
-export const updateProfilePictureSchema = z
+export const avatarProfileSchema = z
   .object({
-    email: z.string().email(),
     avatar: z.string(),
   })
   .strict();
-export type updatedProfilePicture = z.infer<typeof updateProfilePictureSchema>;
+export type avatarProfile = z.infer<typeof avatarProfileSchema>;
 
 export const userLoginSchema = z
   .object({
@@ -100,11 +99,11 @@ export type userResetForgotPasswordInput = z.infer<
   typeof userResetForgotPasswordSchema
 >;
 
-export const getUserSchema = z.string().email()
-  // .object({
-  //   email: z.string().email(),
-  // // })
-  // .strict();
+export const getUserSchema = z.string().email();
+// .object({
+//   email: z.string().email(),
+// // })
+// .strict();
 export type getUser = z.infer<typeof getUserSchema>;
 
 export const otpSchema = z
