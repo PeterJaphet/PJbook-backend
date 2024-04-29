@@ -118,12 +118,12 @@ class authService {
   //####################################################
   async updateProfilePicture(
     image: string | undefined,
-    folder: string | undefined,
+
     email: string
   ) {
-    const result = await uploadCloudImage(image, folder);
+    const result = await uploadCloudImage(image, 'user');
     //result is the cloudinary string of our uploaded image to cloudinary
-    const newCloudinaryImageUrl = result.secure_url;
+    const newCloudinaryImageUrl = result.url;
 
     //use  newCloudinaryImageUrl to update the DB
 

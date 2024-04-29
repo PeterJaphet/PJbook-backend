@@ -46,9 +46,7 @@ const updateUserProfile = ah(async (req: CustomRequest, res) => {
 const updateUserProfilePicture = ah(async (req: CustomRequest, res) => {
   const data = await AuthService.updateProfilePicture(
     req.body.image,
-    req.body.folder,
     req.tokenData?.email!
-    // its either we do it like this above; or we add image and folder as properties of token data... bc the folder is supposed to be the folder name in cloudinary (i.e image or video or what ever we called the folder)
   );
 
   res.status(200).json({
