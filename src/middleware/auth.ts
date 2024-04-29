@@ -18,7 +18,7 @@ const auth = () =>
     try {
       verifyJwt(token, decodedToken?.role === ROLES.ADMIN);
     } catch (error) {
-      logger.err(error)
+      logger.err(error);
       throw new UnauthorizedError();
     }
     if (!user) throw new UnauthorizedError(`User not found!`);
@@ -33,22 +33,4 @@ const auth = () =>
     next();
   });
 
-const allowOnly = (roles: ROLES[]) =>
-  ah(async (req: CustomRequest, res: Response, next: NextFunction) => {
-    if (!roles.includes(req.tokenData!.role)) throw new ForbiddenError();
-    next();
-  });
-
-const denyOnly = (roles: ROLES[]) =>
-  ah(async (req: CustomRequest, res: Response, next: NextFunction) => {
-    if (roles.includes(req.tokenData!.role)) throw new ForbiddenError();
-    next();
-  });
-
-const forgotPasswordAlert = (roles: ROLES[]) =>
-  ah(async (req: CustomRequest, res: Response, next: NextFunction) => {
-    if (roles.includes(req.tokenData!.role)) throw new ForbiddenError();
-    next();
-  });
-
-export { auth, allowOnly, denyOnly, forgotPasswordAlert };
+export { auth };

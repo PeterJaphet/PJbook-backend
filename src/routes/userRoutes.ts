@@ -1,6 +1,6 @@
 import {
-  authUser,
-  registerUser,
+  registerUserHandler,
+  signInUserAuth,
   logoutUser,
   updateUserProfile,
   getUserProfile,
@@ -24,20 +24,21 @@ import express from 'express';
 
 const router = express.Router();
 
+router.post('/login', signInUserAuth);
+
 router.get('/forgot-password', forgtPasswordInputPageHandler);
 router.post('/forgot-password-processor', forgotPasswordHandler);
 router.post('/reset-password-processor', resetPasswordHandler);
-router.post('/update-profile-picture', updateUserProfilePicture);
-router.post('/update-user-profile', updateUserProfile);
+router.patch('/update-profile-picture', auth(), updateUserProfilePicture);
+router.patch('/update-user-profile', auth(), updateUserProfile);
 
 router.post('/get-user', auth(), getUser);
-router.post('/', registerUser);
+router.post('/', registerUserHandler);
 
 router.post('/change-password', changePassword);
 router.post('/send-otp', sendOTP);
 router.post('/confirm-otp', confirmOTP);
 router.post('/resend-otp', resendOTP);
-router.post('/login', authUser);
 
 router.get('/googlelogin', googleAuthUser);
 router.get('/auth/google/callback', callbackHandler);

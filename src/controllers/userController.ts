@@ -1,15 +1,21 @@
-import ah from "express-async-handler";
-import { Request, Response } from "express";
-import path from "path";
+import ah from 'express-async-handler';
+import { Request, Response } from 'express';
+import path from 'path';
 
-import { ForgotPasswordSchemaInput, forgotPasswordSchema } from "../types/auth";
+import { ForgotPasswordSchemaInput, forgotPasswordSchema } from '../types/auth';
 
-import authService from "../services/authService";
-import { CustomRequest } from "../utils/requestInterface";
+import authService from '../services/authService';
+import { CustomRequest } from '../utils/requestInterface';
+
 const AuthService = new authService();
 
+const registerUserHandler = ah(async (req, res) => {
+  const data = await AuthService.signUp(req.body);
+  res.status(200).json({ data });
+});
+
 const forgtPasswordInputPageHandler = ah(async (req, res) => {
-  res.sendFile(path.join(__dirname, "..", "dist/forgotPasswordInputPage.html"));
+  res.sendFile(path.join(__dirname, '..', 'dist/forgotPasswordInputPage.html'));
 });
 
 const forgotPasswordHandler = ah(
@@ -18,28 +24,34 @@ const forgotPasswordHandler = ah(
 
     await AuthService.forgotPassword({ email, admin });
 
-    res.json({ message: "Password reset email sent" });
+    res.json({ message: 'Password reset email sent' });
   }
 );
 
 const resetPasswordHandler = ah(async (req, res) => {
   await AuthService.resetForgotPassword(req.body);
 
-  res.status(200).redirect("http://localhost:5000/users/login");
+  res.status(200).redirect('http://localhost:5000/users/login');
 });
 
-const updateUserProfile = ah(async (req, res) => {
-  const data = await AuthService.updateUserProfile(req.body);
+const updateUserProfile = ah(async (req: CustomRequest, res) => {
+  console.log(req);
+
+  const data = await AuthService.updateUserProfile(req.body, req.tokenData);
   res
     .status(200)
-    .json({ success: true, message: "User updated Successfully", data });
+    .json({ success: true, message: 'User updated Successfully', data });
 });
 
-const updateUserProfilePicture = ah(async (req, res) => {
-  const data = await AuthService.updateUserProfilePicture(req.body);
+const updateUserProfilePicture = ah(async (req: CustomRequest, res) => {
+  const data = await AuthService.updateProfilePicture(
+    req.body.image,
+    req.tokenData?.email!
+  );
+
   res.status(200).json({
     success: true,
-    message: "User Profile Picture updated Successfully",
+    message: 'User Profile Picture updated Successfully',
     data,
   });
 });
@@ -54,8 +66,15 @@ const changePassword = ah(async (req, res) => {
   res.status(200).json({ data });
 });
 
-const authUser = ah(async (req, res) => {
+const signInUserAuth = ah(async (req, res) => {
   const data = await AuthService.signIn(req.body);
+  res.cookie('token', data.token, {
+    httpOnly: true,
+    //secure:true,
+    //maxAge:true,
+    //signed:true,
+  });
+  //res.redirect('/dashboardPage')
   res.status(200).json({ data });
 });
 
@@ -65,19 +84,14 @@ const googleAuthUser = ah(async (req, res) => {
 });
 
 const googleHtmlPage = ah(async (req, res) => {
-  res.sendFile(path.join(__dirname, "..", "dist/index.html"));
-});
-
-const registerUser = ah(async (req, res) => {
-  const data = await AuthService.signUp(req.body);
-  res.status(200).json({ data });
+  res.sendFile(path.join(__dirname, '..', 'dist/index.html'));
 });
 
 const sendOTP = ah(async (req, res) => {
   const data = await AuthService.sendOTP(req.body);
   res
     .status(200)
-    .json({ success: true, message: "OTP sent successfully", data });
+    .json({ success: true, message: 'OTP sent successfully', data });
 });
 
 const confirmOTP = ah(async (req, res) => {
@@ -89,11 +103,11 @@ const resendOTP = ah(async (req, res) => {
   const data = await AuthService.resendOTP(req.body);
   res
     .status(200)
-    .json({ success: true, message: "OTP sent successfully", data });
+    .json({ success: true, message: 'OTP sent successfully', data });
 });
 
 const logoutUser = ah(async (req, res) => {
-  res.status(200).json({ message: "logout User" });
+  res.status(200).json({ message: 'logout User' });
 });
 
 const getUserProfile = ah(async (req, res) => {
@@ -102,13 +116,13 @@ const getUserProfile = ah(async (req, res) => {
 });
 
 const pjbooksWelcomePage = ah(async (req, res) => {
-  res.send("Welcome to PJ Books Backend!");
+  res.send('Welcome to PJ Books Backend!');
 });
 
 export {
-  authUser,
+  registerUserHandler,
+  signInUserAuth,
   googleAuthUser,
-  registerUser,
   sendOTP,
   confirmOTP,
   resendOTP,

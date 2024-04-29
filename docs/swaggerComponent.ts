@@ -1,5 +1,68 @@
 /**
  * @openapi
+ *
+ * '/users':
+ *    post:
+ *      tags:
+ *        - user
+ *      summary: create a new User
+ *      description: creating a new user in the app
+ *      operationId: CreateUser
+ *      requestBody:
+ *        required: true
+ *        description: create user object
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/User'
+ *          application/xml:
+ *            schema:
+ *              $ref: '#/components/schemas/User'
+ *          application/x-www-form-urlencoded:
+ *            schema:
+ *              $ref: '#/components/schemas/User'
+ *      responses:
+ *        default:
+ *           description: successful operation
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/UserResponse'
+ *             application/xml:
+ *               schema:
+ *                 $ref: '#/components/schemas/UserResponse'
+ *  
+ * 
+ * 
+ * 
+ *  
+ * '/users/login':
+ *    post:
+ *      tags:
+ *        - user
+ *      summary: login as an existing User
+ *      description: Logging in as an existing user in the app
+ *      operationId: LoginUser
+ *      requestBody:
+ *        description: Login an existing User in the app
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Login'
+ *      responses:
+ *        default:
+ *           description: successful operation
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/LoginResponse'
+ *             application/xml:
+ *               schema:
+ *                 $ref: '#/components/schemas/LoginResponse'
+ *  
+ * 
+ * 
  * '/users/forgot-password':
  *    get:
  *      tags:
@@ -15,7 +78,7 @@
  *           
  * 
  * '/users/update-profile-picture':
- *    post:
+ *    patch:
  *      tags:
  *        - user
  *      summary: updates profile picture 
@@ -47,8 +110,8 @@
  * 
  * 
  * 
- * '/users//update-user-profile':
- *    post:
+ * '/users/update-user-profile':
+ *    patch:
  *      tags:
  *        - user
  *      summary: updates user's Profile 
@@ -143,36 +206,6 @@
  *                 $ref: '#/components/schemas/ResetPasswordInputsResponse'
  * 
  * 
- * '/users':
- *    post:
- *      tags:
- *        - user
- *      summary: create a new User
- *      description: creating a new user in the app
- *      operationId: CreateUser
- *      requestBody:
- *        required: true
- *        description: create user object
- *        content:
- *          application/json:
- *            schema:
- *              $ref: '#/components/schemas/User'
- *          application/xml:
- *            schema:
- *              $ref: '#/components/schemas/User'
- *          application/x-www-form-urlencoded:
- *            schema:
- *              $ref: '#/components/schemas/User'
- *      responses:
- *        default:
- *           description: successful operation
- *           content:
- *             application/json:
- *               schema:
- *                 $ref: '#/components/schemas/UserResponse'
- *             application/xml:
- *               schema:
- *                 $ref: '#/components/schemas/UserResponse'
  * 
  * '/users/get-user':
  *    post:
@@ -183,6 +216,16 @@
  *      operationId: GetUser
  *      requestBody:
  *        description: get an existing user object
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/GetUserInputs'
+ *          application/xml:
+ *            schema:
+ *              $ref: '#/components/schemas/GetUserInputs'
+ *          application/x-www-form-urlencoded:
+ *            schema:
+ *              $ref: '#/components/schemas/GetUserInputs'
  *      responses:
  *        default:
  *           description: successful operation
@@ -194,7 +237,7 @@
  *               schema:
  *                 $ref: '#/components/schemas/GetUserResponse'
  * 
- * '/users/changepassword':
+ * '/users/change-password':
  *    post:
  *      tags:
  *        - user
@@ -258,32 +301,67 @@
  *               schema:
  *                 $ref: '#/components/schemas/Send-otp-Response' 
  * 
- * '/users/login':
+ * '/users/confirm-otp':
  *    post:
  *      tags:
  *        - user
- *      summary: login as an existing User
- *      description: Logging in as an existing user in the app
- *      operationId: LoginUser
+ *      summary: confirm User otp
+ *      description: confirm user otp
+ *      operationId: Confirm-User-Otp
  *      requestBody:
- *        description: Login an existing User in the app
- *        required: true
+ *        description: confirm user otp
  *        content:
  *          application/json:
  *            schema:
- *              $ref: '#/components/schemas/Login'
+ *              $ref: '#/components/schemas/Confirm-otp'
+ *          application/xml:
+ *            schema:
+ *              $ref: '#/components/schemas/Confirm-otp'
+ *          application/x-www-form-urlencoded:
+ *            schema:
+ *              $ref: '#/components/schemas/Confirm-otp'
  *      responses:
  *        default:
  *           description: successful operation
  *           content:
  *             application/json:
  *               schema:
- *                 $ref: '#/components/schemas/LoginResponse'
+ *                 $ref: '#/components/schemas/Confirm-otp-Response'
  *             application/xml:
  *               schema:
- *                 $ref: '#/components/schemas/LoginResponse'
+ *                 $ref: '#/components/schemas/Confirm-otp-Response' 
  * 
- * /users/googlelogin:
+ * '/users/resend-otp':
+ *    post:
+ *      tags:
+ *        - user
+ *      summary: resend User otp
+ *      description: resend user otp
+ *      operationId: Resend-User-Otp
+ *      requestBody:
+ *        description: resend user otp
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Resend-otp'
+ *          application/xml:
+ *            schema:
+ *              $ref: '#/components/schemas/Resend-otp'
+ *          application/x-www-form-urlencoded:
+ *            schema:
+ *              $ref: '#/components/schemas/Resend-otp'
+ *      responses:
+ *        default:
+ *           description: successful operation
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/Resend-otp-Response'
+ *             application/xml:
+ *               schema:
+ *                 $ref: '#/components/schemas/Resend-otp-Response' 
+ * 
+ * '/users/googlelogin':
  *   get:
  *      tags:
  *         - user
@@ -295,7 +373,7 @@
  *        default:
  *           description: successful operation
  * 
- * /users/googlehtmlpage:
+ * '/users/googlehtmlpage':
  *   get:
  *      tags:
  *         - user   
@@ -307,7 +385,7 @@
  *        default:
  *           description: successful operation
  * 
- * /users/logout:
+ * '/users/logout':
  *   post:
  *      tags:
  *         - user   
@@ -319,6 +397,7 @@
  *        default:
  *           description: successful operation
  *
+ *
 
  * components:
  *   schemas:
@@ -327,7 +406,6 @@
  *      required: 
  *        - email
  *        - admin
- *        
  *      properties:      
  *        email:
  *          type: string
@@ -336,6 +414,7 @@
  *          type: boolean
  *          example: true
  *        
+ *  
  *     ForgotPasswordUserEmailResponse:
  *       type: object
  *       properties:
@@ -356,38 +435,26 @@
  *     UpdateProfilePicture:
  *      type: object
  *      required: 
- *        - email
- *        - avatar
+ *        - image
+ *        - folder
  *        
  *      properties:      
- *        email:
+ *        image:
  *          type: string
- *          example: uzo@gmail.com
- *        avatar:
+ *        folder:
  *          type: string
- *          
- *        
+ *             
  *     UpdateProfilePictureResponse:
  *       type: object
  *       properties:
- *         avatar:
- *           type: string        
- *         _id:
- *           type: string        
- *         createdAt:
- *           type: string         
- *         updatedAt:
- *           type: string         
-
-
+ *         image:
+ *     
  *     UpdateUserProfile:
  *      type: object
  *      required: 
- *        - email
  *        - firstName
  *        - lastName
- *        - dob
- *        - role
+ *        - dob        
  *        - pnoneNumber
  *      properties:
 *        firstName:
@@ -396,25 +463,17 @@
  *        lastName:
  *          type: string
  *          example: Aronu
- *        email:
- *          type: string
- *          example: uzo@gmail.com
  *        dob:
  *          type: string
  *          example: '14th may'
- *        role:
- *          type: string
- *          example: admin
  *        phoneNumber:
  *          type: string
  *          example: 12345678910
- *        verified:
- *          type: boolean
- *          example: true or false
- *        isActive:
- *          type: boolean
- *          example: true or false
+ *        address:
+ *          type: string
+ *          example: barclays luxury estate 
  
+
  *     UpdateUserProfileResponse:
  *       type: object
  *       properties:
@@ -492,12 +551,7 @@
  *        address:
  *          type: string
  *          example: Barclays-abuja
- *        verified:
- *          type: boolean
- *          example: true or false
- *        isActive:
- *          type: boolean
- *          example: true or false
+ *        
  *          
  *     UserResponse:
  *      type: object
@@ -571,6 +625,31 @@
  *     Send-otp-Response:
  *      type: string 
  * 
+ *     Confirm-otp:
+ *      type: object
+ *      properties:
+ *       email:
+ *          type: string
+ *       password:
+ *          type: string
+ *       otp:
+ *          type: number
+ *     Confirm-otp-Response:
+ *      type: object
+ *      properties:
+ *       user:
+ *          type: object
+ *       token:
+ *          type: string 
+ * 
+ *     Resend-otp:
+ *      type: object
+ *      properties:
+ *       email:
+ *          type: string
+ *     Resend-otp-Response:
+ *      type: string 
+ * 
  *     Login:
  *      type: object
  *      properties:
@@ -589,7 +668,7 @@
  *          type: string | undefined
  *          
  * 
- *     GetUser:
+ *     GetUserInputs:
  *      type: object
  *      properties:
  *       email:
@@ -629,5 +708,3 @@
  * 
  *
  */
-
-// router.post('/', registerUser);
