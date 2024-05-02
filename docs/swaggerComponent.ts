@@ -1,6 +1,84 @@
 /**
- * @openapi
- *
+ * @openapi 
+ * '/book/get-books':
+ *    get:
+ *      tags:
+ *        - books
+ *      summary: gets the list of available books
+ *      description: get list of books
+ *      operationId: getBooks
+ *      parameters: []      
+ *      responses:
+ *        default:
+ *           description: successful operation
+ * 
+ * 
+ * 
+ * 
+ * '/book/get-book/{id}':
+ *    get:
+ *      tags:
+ *        - books
+ *      summary: gets a particular book
+ *      description: getting a book
+ *      operationId: get-book
+ *      parameters: 
+ *          - name: "id"
+ *            in: "path"
+ *            description: ID of the book to get 
+ *            required: true
+ *            type: "string"
+ *      
+ *      responses:
+ *        default:
+ *           description: successful operation
+ * 
+ * 
+ * 
+ * 
+ * 
+ * '/book/update-book/{id}':
+ *    patch:
+ *      tags:
+ *        - books
+ *      summary: update a book 
+ *      description: update the details of a book
+ *      operationId: update-book 
+ *      parameters:
+ *          - name: "id"
+ *            in: "path"
+ *            description: "ID of the book to update" 
+ *            required: true
+ *            type: "string"
+ *  
+ *      requestBody:
+ *        required: true
+ *        description: "input book's parameters for update"
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/UpdateBook'
+ *          application/xml:
+ *            schema:
+ *              $ref: '#/components/schemas/UpdateBook'
+ *          application/x-www-form-urlencoded:
+ *            schema:
+ *              $ref: '#/components/schemas/UpdateBook'
+ *      responses:
+ *        default:
+ *           description: successful operation
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/UpdateBookPictureResponse'
+ *             application/xml:
+ *               schema:
+ *                 $ref: '#/components/schemas/UpdateBookPictureResponse'
+ * 
+ * 
+ * 
+ * 
+ * 
  * '/users':
  *    post:
  *      tags:
@@ -430,6 +508,42 @@
  *           type: string         
  *         updatedAt:
  *           type: string         
+ *       
+ * 
+ *     UpdateBook:
+ *      type: object
+ *      required: 
+ *        - title
+ *        - description
+ *        - imageUrl
+ *        - fileUploadUrl
+ *        - genre
+ *        - type
+ *      properties:
+ *         title:
+ *           type: string         
+ *         description:
+ *           type: string          
+ *         imageUrl:
+ *           type: string        
+ *         fileUploadUrl:
+ *           type: string        
+ *         genre:
+ *           type: string[]         
+ *         type:
+ *           enum: 
+ *              - "private"
+ *              - "public"  
+ *        
+ *     UpdateBookResponse:
+ *       200:
+ *         description: "Book updated successfully"
+ *       400:
+ *         description: "Bad Request - Invalid parameters"
+ *       404:
+          description: "Not Found - Book not found"
+        500:
+          description: "Internal Server Error - Something went wrong"        
  *       
  * 
  *     UpdateProfilePicture:
