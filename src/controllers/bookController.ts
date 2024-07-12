@@ -6,8 +6,8 @@ import { ValidationError } from "../middleware/errorMiddleware";
 const BookService = new bookService();
 
 const addBook = ah(async (req, res) => {
-  if (!req.file) throw new ValidationError("File is empty!");
-  const data = await BookService.addBook(req.body, req.file);
+  if (!req.files) throw new ValidationError("File is empty!");
+  const data = await BookService.addBook(req.body, req.files);
   res.status(200).json({ data });
 });
 
