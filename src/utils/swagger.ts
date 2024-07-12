@@ -3,15 +3,13 @@ import swaggerJsdoc from 'swagger-jsdoc'; // used to build out the swaggerdocume
 import swaggerUi from 'swagger-ui-express'; // used to expose the documentation in an Interface
 import { version } from '../../package.json'; //used to put our version on th docs
 
-import log from './logger';
-
-const options: swaggerJsdoc.Options = {
+import log from './logger';const options: swaggerJsdoc.Options = {
   definition: {
     openapi: '3.0.0',
     info: {
       title: 'PJBOOKS REST API Docs',
       description: 'This is the SWAGGER API documentation of PJBooks app',
-      version,
+      version: version,
       contact: {
         name: 'uzo for more info',
         email: 'pjbooks@getMaxListeners.com',
@@ -21,7 +19,6 @@ const options: swaggerJsdoc.Options = {
       description: 'Find out more about PJBooks',
       url: 'http://localhost:5000/login',
     },
-
     components: {
       securitySchemes: {
         bearerAuth: {
@@ -37,9 +34,9 @@ const options: swaggerJsdoc.Options = {
       },
     ],
   },
-
   apis: ['./docs/swaggerComponent.ts', './src/types/*.ts'],
 };
+
 
 const swaggerSpec = swaggerJsdoc(options);
 // log.info(swaggerSpec);
