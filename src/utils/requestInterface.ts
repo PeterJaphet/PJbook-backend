@@ -3,7 +3,7 @@ import { ROLES } from './enums';
 
 export interface CustomRequest extends Request {
   tokenData?: {
-    email?: string;
+    email?: string | undefined;
     id: string;
     role: ROLES;
   };

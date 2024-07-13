@@ -13,6 +13,24 @@ import { uploadCloudImage, uploadPdfFile } from '../utils/cloudinary';
 import { bookGenre } from '../utils/constants';
 
 class bookService {
+  async trendingBooks() {
+    const books = await Book.find().sort({ userLikes: -1 }).limit(10);
+    return books;
+  }
+  async recommendedBooks() {
+    const books: getBooksType = await Book.find()
+      .sort({ userSaves: -1 })
+      .limit(10);
+    return books;
+  }
+
+  async latestBooks() {
+    const books: getBooksType = await Book.find()
+      .sort({ createdAt: -1 })
+      .limit(10);
+    return books;
+  }
+
   async addBook(bookData: addBookType, file: any) {
     const cloudImg = await uploadCloudImage(bookData.imageUrl, 'BookCover');
     bookData.imageUrl = cloudImg.url;
@@ -29,27 +47,28 @@ class bookService {
   }
 
   async getBooks() {
+    //change this type
     const bookList: getBooksType = await Book.find();
 
     return bookList;
   }
+  async getTotalBooksCount() {
+    const bookTotalCount = await Book.length;
+    return bookTotalCount;
+  }
 
   async getBook(parameters: getBookInputType) {
-    const { id } = parameters;
+    const id = parameters;
     const book = await Book.findOne({ _id: id });
     return book;
   }
 
-  async updateBook(
-    parameters: getBookInputType,
-    updateParameters: updateBookType
-  ) {
-    const { id } = parameters;
+  async updateBook(parameters: string, updateParameters: updateBookType) {
     const { title, description, imageUrl, fileUploadUrl, genre, type } =
       updateParameters;
 
     const updatedBook = await Book.updateOne(
-      { _id: id },
+      { _id: parameters },
       {
         $set: {
           title: title,

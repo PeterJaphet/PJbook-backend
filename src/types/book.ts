@@ -30,9 +30,7 @@ export const getBooksSchema = z.array(
 );
 export type getBooksType = z.infer<typeof getBooksSchema>;
 
-export const getBookInputSchema = z.object({
-  id: z.string(),
-});
+export const getBookInputSchema = z.string();
 
 export type getBookInputType = z.infer<typeof getBookInputSchema>;
 

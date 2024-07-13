@@ -1,6 +1,6 @@
-import mongoose, { Schema, models } from "mongoose";
+import mongoose, { Schema, models } from 'mongoose';
 
-import { BOOKTYPE } from "../utils/enums";
+import { BOOKTYPE } from '../utils/enums';
 
 const bookSchema = new Schema(
   {
@@ -27,19 +27,19 @@ const bookSchema = new Schema(
     userLikes: [
       {
         type: String,
-        default: "",
+        default: '',
       },
     ],
     userSaves: [
       {
         type: String,
-        default: "",
+        default: '',
       },
     ],
     genre: [
       {
         type: String,
-        default: "",
+        default: '',
       },
     ],
     type: {
@@ -47,6 +47,10 @@ const bookSchema = new Schema(
       required: true,
       enum: BOOKTYPE,
       default: BOOKTYPE.PUBLIC,
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now(),
     },
     isActive: {
       type: Boolean,
@@ -56,6 +60,6 @@ const bookSchema = new Schema(
   { timestamps: true }
 );
 
-const Book = models.Book || mongoose.model("Book", bookSchema);
+const Book = models.Book || mongoose.model('Book', bookSchema);
 
 export default Book;

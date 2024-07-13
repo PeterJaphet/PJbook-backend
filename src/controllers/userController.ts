@@ -12,7 +12,7 @@ const AuthService = new authService();
 const registerUserHandler = ah(async (req, res) => {
   const data = await AuthService.signUp(req.body);
   res.status(200).json({ data });
-});
+}); //done
 
 const forgtPasswordInputPageHandler = ah(async (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'dist/forgotPasswordInputPage.html'));
@@ -41,7 +41,7 @@ const updateUserProfile = ah(async (req: CustomRequest, res) => {
   res
     .status(200)
     .json({ success: true, message: 'User updated Successfully', data });
-});
+}); //done
 
 const updateUserProfilePicture = ah(async (req: CustomRequest, res) => {
   const data = await AuthService.updateProfilePicture(
@@ -54,17 +54,20 @@ const updateUserProfilePicture = ah(async (req: CustomRequest, res) => {
     message: 'User Profile Picture updated Successfully',
     data,
   });
-});
+}); //done
 
 const getUser = ah(async (req: CustomRequest, res) => {
+  // console.log(req.headers.authorization);
+  // console.log(req.headers.cookie);
+
   const data = await AuthService.getUser(req.tokenData?.email!);
   res.status(200).json({ data });
-});
+}); //done
 
 const changePassword = ah(async (req, res) => {
   const data = await AuthService.changePassword(req.body);
   res.status(200).json({ data });
-});
+}); //done
 
 const signInUserAuth = ah(async (req, res) => {
   const data = await AuthService.signIn(req.body);
@@ -76,7 +79,7 @@ const signInUserAuth = ah(async (req, res) => {
   });
   //res.redirect('/dashboardPage')
   res.status(200).json({ data });
-});
+}); //done
 
 const googleAuthUser = ah(async (req, res) => {
   const data = await AuthService.getGoogleOAuthURL();
@@ -106,8 +109,9 @@ const resendOTP = ah(async (req, res) => {
     .json({ success: true, message: 'OTP sent successfully', data });
 });
 
-const logoutUser = ah(async (req, res) => {
-  res.status(200).json({ message: 'logout User' });
+const logoutUser = ah(async (req: CustomRequest, res) => {
+  res.clearCookie('token');
+  res.status(200).json({ message: 'Logged out successfully' });
 });
 
 const getUserProfile = ah(async (req, res) => {
