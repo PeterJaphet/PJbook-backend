@@ -5,10 +5,11 @@ import { decodeJwt, verifyJwt } from '../utils/jwtLib';
 import UserRepo from '../repo/userRepo';
 import { ROLES } from '../utils/enums';
 import { CustomRequest } from '../utils/requestInterface';
+import logger from '../utils/logger';
 
 const auth = () =>
   ah(async (req: CustomRequest, res: Response, next: NextFunction) => {
-    let token = req.headers.authorization;
+    let token = req.headers.authorization?.split(' ')[1];
     if (!token) throw new UnauthorizedError();
 
     const decodedToken = decodeJwt(token);
@@ -17,9 +18,9 @@ const auth = () =>
     try {
       verifyJwt(token, decodedToken?.role === ROLES.ADMIN);
     } catch (error) {
+      logger.err(error);
       throw new UnauthorizedError();
     }
-
     if (!user) throw new UnauthorizedError(`User not found!`);
 
     if (decodedToken.role === ROLES.AUTHOR && !user.verified)
@@ -32,22 +33,4 @@ const auth = () =>
     next();
   });
 
-const allowOnly = (roles: ROLES[]) =>
-  ah(async (req: CustomRequest, res: Response, next: NextFunction) => {
-    if (!roles.includes(req.tokenData!.role)) throw new ForbiddenError();
-    next();
-  });
-
-const denyOnly = (roles: ROLES[]) =>
-  ah(async (req: CustomRequest, res: Response, next: NextFunction) => {
-    if (roles.includes(req.tokenData!.role)) throw new ForbiddenError();
-    next();
-  });
-
-const forgotPasswordAlert = (roles: ROLES[]) =>
-  ah(async (req: CustomRequest, res: Response, next: NextFunction) => {
-    if (roles.includes(req.tokenData!.role)) throw new ForbiddenError();
-    next();
-  });
-
-export { auth, allowOnly, denyOnly, forgotPasswordAlert };
+export { auth };

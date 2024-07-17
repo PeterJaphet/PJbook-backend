@@ -23,7 +23,8 @@ import {
   mailOptionsSchema,
   ForgotPasswordSchemaInput,
   userResetForgotPasswordInput,
-  updatedProfilePicture,
+  avatarProfile,
+  tokenData,
 } from '../types/auth';
 import { bcryptCompare, bcryptPassword } from '../utils/hashPassword';
 import { FilterQuery, QueryOptions, UpdateQuery } from 'mongoose';
@@ -35,6 +36,7 @@ import { GoogleTokensResult } from '../types/auth';
 import { uploadCloudImage } from '../utils/cloudinary';
 import mailSender from '../utils/mailSender';
 import path from 'path';
+import { ROLES } from '../utils/enums';
 
 class authService {
   async forgotPassword(userDetails: ForgotPasswordSchemaInput) {
@@ -114,11 +116,30 @@ class authService {
     return updatedUser;
   }
 
-  async updateProfilePicture(image: any) {
-    const result = await uploadCloudImage(image, null);
+  async updateProfilePicture(
+    image: string | undefined,
 
-    const newCloudinaryImageUrl = result.secure_url;
-  }
+    email: string
+  ) {
+    const result = await uploadCloudImage(image, 'user');
+    //result is the cloudinary string of our uploadedImage to cloudinary
+    const newCloudinaryImageUrl = result.url;
+
+    //use  newCloudinaryImageUrl to update the DB
+
+    const existingUser = await User.findOne({ email: email });
+
+    if (!existingUser)
+      throw new ValidationError(`User with ${email} does not exist!`);
+
+    const updatedUser = await User.findOneAndUpdate(
+      { email: email },
+      { $set: { avatar: newCloudinaryImageUrl } },
+      { new: true }
+    );
+
+    return updatedUser;
+  } //done
 
   async resetPassword(userDetails: userChangePassword) {
     const { email, oldPassword, newPassword } = userDetails;
@@ -146,9 +167,9 @@ class authService {
   }
 
   async getUser(userEmail: getUser) {
-    const existingUser = await User.findOne({ email: userEmail.email });
+    const existingUser = await User.findOne({ email: userEmail });
     return existingUser;
-  }
+  } //done
 
   async changePassword(userDetails: userChangePassword) {
     const { email, oldPassword, newPassword } = userDetails;
@@ -173,47 +194,30 @@ class authService {
     );
 
     return updatedUser;
-  }
+  } //done
 
-  async updateUserProfile(userUpdateProfile: updatedUser) {
-    const {
-      email,
-      firstName,
-      lastName,
-      dob,
-      role,
-      phoneNumber,
-      verified,
-      isActive,
-      address,
-    } = userUpdateProfile;
-    const updatedUser = await User.updateOne(
-      { email: email },
+  async updateUserProfile(
+    userUpdateProfile: updatedUser,
+    tokenData: tokenData
+  ) {
+    const { firstName, lastName, dob, phoneNumber, address } =
+      userUpdateProfile;
+    const updatedUser = await User.findOneAndUpdate(
+      { email: tokenData.email },
       {
         $set: {
           firstName: firstName,
           lastName: lastName,
           dob: dob,
-          role: role,
           phoneNumber: phoneNumber,
-          verified: verified,
-          isActive: isActive,
           address: address,
         },
-      }
+      },
+      { new: true }
     );
 
     return updatedUser;
-  }
-
-  async updateUserProfilePicture(userPictureProfile: updatedProfilePicture) {
-    const { email, avatar } = userPictureProfile;
-    const updatedPictureAvatar = await User.updateOne(
-      { email: email },
-      { $set: { avatar: avatar } }
-    );
-    return updatedPictureAvatar;
-  }
+  } //done
 
   async signIn(currentUser: userLogin) {
     const existingUser = await User.findOne({ email: currentUser.email });
@@ -236,11 +240,11 @@ class authService {
         email: existingUser.email,
         role: existingUser.role,
       },
-      false
+      existingUser.role === ROLES.ADMIN
     );
 
-    return { existingUser, token };
-  }
+    return { user: existingUser, token };
+  } //done
 
   async getGoogleOAuthURL() {
     const rootUrl = 'https://accounts.google.com/o/oauth2/v2/auth';
@@ -270,16 +274,13 @@ class authService {
 
     const user = await User.create({ ...newUser, isActive: true });
 
-    console.log(user);
-
     const token = generateJwt(
       { id: user.id, email: user.email, role: user.role },
       false
     );
-    console.log(`${token}`);
 
     return { user, token };
-  }
+  } //done
 
   async sendOTP(otpInfo: otpType) {
     const { email } = otpInfo;
@@ -298,8 +299,6 @@ class authService {
 
   async confirmOTP(confirmOtp: confirmOtpType) {
     const { email, otp } = confirmOtp;
-
-    console.log(email, 'Hello', otp);
     const user = await User.findOne({ email });
 
     if (!user) {

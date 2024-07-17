@@ -15,6 +15,21 @@ export const forgotPasswordSchema = z
   .strict();
 export type ForgotPasswordSchemaInput = z.infer<typeof forgotPasswordSchema>;
 
+export const tokenDataSchema = z
+  .object({
+    email: z.string().email('Not a valid email'),
+    id: z.string(),
+    role: z.nativeEnum(ROLES),
+  })
+  .strict();
+export type tokenData = z.infer<typeof tokenDataSchema>;
+
+// export type tokenData = {
+//   id: string;
+//   email: string;
+//   role: ROLES;
+// };
+
 // Validation schema using Zod
 export const resetPasswordSchema = z
   .object({
@@ -54,24 +69,21 @@ export const updateUserSchema = z
   .object({
     firstName: z.string(),
     lastName: z.string(),
-    email: z.string().email(),
+    // email: z.string().email(),
     dob: z.string(),
-    role: z.nativeEnum(ROLES),
+    // role: z.nativeEnum(ROLES),
     phoneNumber: z.string(),
     address: z.string().optional(),
-    verified: z.boolean().default(false),
-    isActive: z.boolean().default(false),
   })
   .strict();
 export type updatedUser = z.infer<typeof updateUserSchema>;
 
-export const updateProfilePictureSchema = z
+export const avatarProfileSchema = z
   .object({
-    email: z.string().email(),
     avatar: z.string(),
   })
   .strict();
-export type updatedProfilePicture = z.infer<typeof updateProfilePictureSchema>;
+export type avatarProfile = z.infer<typeof avatarProfileSchema>;
 
 export const userLoginSchema = z
   .object({
@@ -102,11 +114,11 @@ export type userResetForgotPasswordInput = z.infer<
   typeof userResetForgotPasswordSchema
 >;
 
-export const getUserSchema = z
-  .object({
-    email: z.string().email(),
-  })
-  .strict();
+export const getUserSchema = z.string().email();
+// .object({
+//   email: z.string().email(),
+// // })
+// .strict();
 export type getUser = z.infer<typeof getUserSchema>;
 
 export const otpSchema = z

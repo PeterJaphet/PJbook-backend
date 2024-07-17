@@ -12,7 +12,7 @@ import swaggerDocs from './utils/swagger';
 import bookRoutes from '../src/routes/bookRoutes';
 import fileUpload from 'express-fileupload';
 import { notFound, errorHandler } from './middleware/errorMiddleware';
-import { allowOnly, auth } from './middleware/auth';
+import { auth } from './middleware/auth';
 
 const createApp = () => {
   const app = express();
