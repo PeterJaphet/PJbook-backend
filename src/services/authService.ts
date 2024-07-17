@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { ValidationError } from '../middleware/errorMiddleware';
 import AuthRepo from '../repo/authRepo';
-import { generateJwt, tokenData } from '../utils/jwtLib';
+import { generateJwt } from '../utils/jwtLib';
 import mongoose from 'mongoose';
 import logger from '../utils/logger';
 import { generateOTP } from '../utils/generateOTP';
@@ -24,6 +24,7 @@ import {
   ForgotPasswordSchemaInput,
   userResetForgotPasswordInput,
   avatarProfile,
+  tokenData,
 } from '../types/auth';
 import { bcryptCompare, bcryptPassword } from '../utils/hashPassword';
 import { FilterQuery, QueryOptions, UpdateQuery } from 'mongoose';
@@ -115,14 +116,13 @@ class authService {
     return updatedUser;
   }
 
-  //####################################################
   async updateProfilePicture(
     image: string | undefined,
 
     email: string
   ) {
     const result = await uploadCloudImage(image, 'user');
-    //result is the cloudinary string of our uploaded image to cloudinary
+    //result is the cloudinary string of our uploadedImage to cloudinary
     const newCloudinaryImageUrl = result.url;
 
     //use  newCloudinaryImageUrl to update the DB
@@ -132,13 +132,14 @@ class authService {
     if (!existingUser)
       throw new ValidationError(`User with ${email} does not exist!`);
 
-    const updatedUser = await User.updateOne(
+    const updatedUser = await User.findOneAndUpdate(
       { email: email },
-      { $set: { avatar: newCloudinaryImageUrl } }
+      { $set: { avatar: newCloudinaryImageUrl } },
+      { new: true }
     );
 
     return updatedUser;
-  }
+  } //done
 
   async resetPassword(userDetails: userChangePassword) {
     const { email, oldPassword, newPassword } = userDetails;
@@ -168,7 +169,7 @@ class authService {
   async getUser(userEmail: getUser) {
     const existingUser = await User.findOne({ email: userEmail });
     return existingUser;
-  }
+  } //done
 
   async changePassword(userDetails: userChangePassword) {
     const { email, oldPassword, newPassword } = userDetails;
@@ -193,14 +194,15 @@ class authService {
     );
 
     return updatedUser;
-  }
+  } //done
 
   async updateUserProfile(
     userUpdateProfile: updatedUser,
     tokenData: tokenData
   ) {
-    const { firstName, lastName, dob, phoneNumber } = userUpdateProfile;
-    const updatedUser = await User.updateOne(
+    const { firstName, lastName, dob, phoneNumber, address } =
+      userUpdateProfile;
+    const updatedUser = await User.findOneAndUpdate(
       { email: tokenData.email },
       {
         $set: {
@@ -208,12 +210,14 @@ class authService {
           lastName: lastName,
           dob: dob,
           phoneNumber: phoneNumber,
+          address: address,
         },
-      }
+      },
+      { new: true }
     );
 
     return updatedUser;
-  }
+  } //done
 
   async signIn(currentUser: userLogin) {
     const existingUser = await User.findOne({ email: currentUser.email });
@@ -240,7 +244,7 @@ class authService {
     );
 
     return { user: existingUser, token };
-  }
+  } //done
 
   async getGoogleOAuthURL() {
     const rootUrl = 'https://accounts.google.com/o/oauth2/v2/auth';
@@ -276,7 +280,7 @@ class authService {
     );
 
     return { user, token };
-  }
+  } //done
 
   async sendOTP(otpInfo: otpType) {
     const { email } = otpInfo;

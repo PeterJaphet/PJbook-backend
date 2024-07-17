@@ -15,6 +15,21 @@ export const forgotPasswordSchema = z
   .strict();
 export type ForgotPasswordSchemaInput = z.infer<typeof forgotPasswordSchema>;
 
+export const tokenDataSchema = z
+  .object({
+    email: z.string().email('Not a valid email'),
+    id: z.string(),
+    role: z.nativeEnum(ROLES),
+  })
+  .strict();
+export type tokenData = z.infer<typeof tokenDataSchema>;
+
+// export type tokenData = {
+//   id: string;
+//   email: string;
+//   role: ROLES;
+// };
+
 // Validation schema using Zod
 export const resetPasswordSchema = z
   .object({
