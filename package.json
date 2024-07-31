@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon",
     "dev": "nodemon",
+    "start": "tsup ts-node ./src/index.ts --onSuccess \"node -r newrelic dist/index.js\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
