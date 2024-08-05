@@ -7,7 +7,6 @@
     "build": "tsup src/index.ts",
     "start": "node -r newrelic dist/index.js",
     "dev": "tsup ts-node ./src/index.ts --watch --onSuccess \"node -r newrelic dist/index.js\"",
-    "docs:sock:gen": "npx -y @asyncapi/generator ./docs/asyncapi.yml @asyncapi/html-template -o ./docs/asyncapi --force-write -p singleFile=true",
     "lint": "tsc --noEmit && eslint src",
     "lint:fix": "tsc --noEmit && eslint src --fix",
     "test": "echo \"Error: no test specified\" && exit 1",
